@@ -1,0 +1,2107 @@
+export const phase2Data = {
+  "phase": "Phase 2: Python Data Structures and Collections",
+  "totalQuestions": 200,
+  "topics": [
+    {
+      "id": 1,
+      "name": "Strings",
+      "range": [
+        1,
+        20
+      ],
+      "count": 20
+    },
+    {
+      "id": 2,
+      "name": "Lists",
+      "range": [
+        21,
+        45
+      ],
+      "count": 25
+    },
+    {
+      "id": 3,
+      "name": "Tuples",
+      "range": [
+        46,
+        60
+      ],
+      "count": 15
+    },
+    {
+      "id": 4,
+      "name": "Sets",
+      "range": [
+        61,
+        78
+      ],
+      "count": 18
+    },
+    {
+      "id": 5,
+      "name": "Dictionaries",
+      "range": [
+        79,
+        103
+      ],
+      "count": 25
+    },
+    {
+      "id": 6,
+      "name": "Frozen Sets",
+      "range": [
+        104,
+        113
+      ],
+      "count": 10
+    },
+    {
+      "id": 7,
+      "name": "Collections Module",
+      "range": [
+        114,
+        135
+      ],
+      "count": 22
+    },
+    {
+      "id": 8,
+      "name": "Iteration",
+      "range": [
+        136,
+        155
+      ],
+      "count": 20
+    },
+    {
+      "id": 9,
+      "name": "Sorting",
+      "range": [
+        156,
+        175
+      ],
+      "count": 20
+    },
+    {
+      "id": 10,
+      "name": "Copying",
+      "range": [
+        176,
+        190
+      ],
+      "count": 15
+    },
+    {
+      "id": 11,
+      "name": "Advanced Integrated",
+      "range": [
+        191,
+        200
+      ],
+      "count": 10
+    }
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "title": "What is a string in Python?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "A string is an immutable sequence of Unicode characters. We use strings to represent textual data. Python allows us to create strings using single quotes, double quotes or triple quotes.",
+      "keyConcepts": "Sequence, Unicode, immutability.",
+      "code": "name = \"Abhiraj\"\nlanguage = 'Python'",
+      "output": ""
+    },
+    {
+      "id": 2,
+      "title": "Why are strings immutable in Python?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "Strings are immutable because their contents cannot be changed after creation. This makes them predictable and allows Python to safely reuse string objects in certain situations. Whenever we modify a string, Python creates a new string instead of changing the original one.",
+      "keyConcepts": "",
+      "code": "name = \"Python\"\nname = name + \" Developer\"",
+      "output": ""
+    },
+    {
+      "id": 3,
+      "title": "What are the advantages of string immutability?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "String immutability provides predictable behaviour, makes strings safe to share between different parts of a program and allows strings to be used as dictionary keys. It also enables certain runtime optimizations.",
+      "keyConcepts": "Hashability, predictable state, optimization.",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 4,
+      "title": "What is string indexing?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "Indexing allows us to access individual characters in a string using their positions. Python supports both positive and negative indexing. Positive indexing starts from zero, while negative indexing starts from minus one.",
+      "keyConcepts": "",
+      "code": "text = \"PYTHON\"\n\nprint(text[0])\n\n# P\n\nprint(text[-1])\n\n# N",
+      "output": ""
+    },
+    {
+      "id": 5,
+      "title": "What is string slicing?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "Slicing allows us to extract a portion of a string using start, stop and step values. The starting index is included, but the stopping index is excluded.",
+      "keyConcepts": "",
+      "code": "text = \"PYTHON\"\n\nprint(text[1:4])\n\n# YTH\n\nprint(text[:3])\n\n# PYT\n\nprint(text[::2])\n\n# PTO",
+      "output": ""
+    },
+    {
+      "id": 6,
+      "title": "What happens when we use an invalid index in a string?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "If we access an index outside the valid range using normal indexing, Python raises an IndexError. However, slicing generally does not raise an IndexError when the boundaries exceed the string length.",
+      "keyConcepts": "",
+      "code": "text = \"Python\"\n#\n\nprint(text[10])\n\n# IndexError\n\nprint(text[0:100])\n\n# Python",
+      "output": ""
+    },
+    {
+      "id": 7,
+      "title": "What is the difference between indexing and slicing?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "Indexing returns a single element at a specified position, whereas slicing returns a new sequence containing a selected portion of the original string.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 8,
+      "title": "How can we reverse a string in Python?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "We can reverse a string using slicing with a negative step. It creates a new reversed string without modifying the original string.",
+      "keyConcepts": "",
+      "code": "text = \"Python\"\n\nprint(text[::-1])",
+      "output": ""
+    },
+    {
+      "id": 9,
+      "title": "What is the difference between find() and index()?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "Both methods search for a substring and return its first position. The difference is that find() returns -1 when the substring is not found, whereas index() raises a ValueError.",
+      "keyConcepts": "",
+      "code": "text = \"Python\"\n\nprint(text.find(\"Java\")\n\n)\n# -1#\n\nprint(text.index(\"Java\")\n\n)\n# ValueError",
+      "output": ""
+    },
+    {
+      "id": 10,
+      "title": "What is the difference between split() and join()?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "split() divides a string into a list of substrings, whereas join() combines multiple strings into one string using a specified separator.",
+      "keyConcepts": "",
+      "code": "text = \"Python Java C++\"\nwords = text.split()\nprint(words)\n\nresult = \"-\".join(words)\nprint(result)",
+      "output": ""
+    },
+    {
+      "id": 11,
+      "title": "What is the difference between strip(), lstrip() and rstrip()?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "strip() removes specified characters from both ends of a string, lstrip() removes them from the left side, and rstrip() removes them from the right side. By default, they remove whitespace.",
+      "keyConcepts": "",
+      "code": "text = \"  Python  \"\n\nprint(text.strip()\n\n)\nprint(text.lstrip()\n\n)\nprint(text.rstrip()\n\n)",
+      "output": ""
+    },
+    {
+      "id": 12,
+      "title": "What is the difference between replace() and translate()?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "replace() substitutes a specified substring with another substring. translate() performs character-level replacement or deletion using a translation table created with str.maketrans().",
+      "keyConcepts": "",
+      "code": "text = \"banana\"\n\nprint(text.replace(\"a\", \"o\")\n\n)\ntable = st\nr.maketrans(\"ab\", \"xy\")\nprint(text.translate(table)\n\n)",
+      "output": ""
+    },
+    {
+      "id": 13,
+      "title": "What is the difference between isalpha(), isdigit() and isalnum()?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "isalpha() checks whether all characters are alphabetic, isdigit() checks whether all characters are digits, and isalnum() checks whether all characters are alphanumeric.",
+      "keyConcepts": "",
+      "code": "print(\"Python\".isalpha()\n\n)\n# True\n\nprint(\"123\".isdigit()\n\n)\n# True\n\nprint(\"Python123\".isalnum()\n\n)\n# True",
+      "output": ""
+    },
+    {
+      "id": 14,
+      "title": "What is string interning?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "String interning is an optimization where Python reuses certain string objects instead of creating separate copies. It can reduce memory usage and make some identity comparisons faster. However, we should never depend on string interning when checking equality.",
+      "keyConcepts": "Object reuse, memory optimization, implementation detail.",
+      "code": "a = \"hello\"\nb = \"hello\"\n\nprint(a == b)\n\n# True",
+      "output": ""
+    },
+    {
+      "id": 15,
+      "title": "What is the difference between lower() and casefold()?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "Both methods convert strings into lowercase-like forms. However, casefold() is more aggressive and is designed for caseless Unicode comparisons. It is preferable when comparing text without considering case.",
+      "keyConcepts": "",
+      "code": "text = \"Straße\"\n\nprint(text.lower()\n\n)\nprint(text.casefold()\n\n)",
+      "output": ""
+    },
+    {
+      "id": 16,
+      "title": "How can we check whether a string is a palindrome?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "A palindrome reads the same forward and backward. We can compare the original string with its reversed version.",
+      "keyConcepts": "",
+      "code": "text = \"madam\"\n\nprint(text == text[::-1])",
+      "output": ""
+    },
+    {
+      "id": 17,
+      "title": "Why is repeated string concatenation potentially inefficient?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "Because strings are immutable, repeated concatenation can create many intermediate string objects. For joining a large number of strings, using str.join() is generally more efficient.",
+      "keyConcepts": "",
+      "code": "words = [\"Python\", \"is\", \"powerful\"]\nresult = \" \".join(words)",
+      "output": ""
+    },
+    {
+      "id": 18,
+      "title": "What are f-strings in Python?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "F-strings are formatted string literals that allow us to embed variables and expressions directly inside strings. They provide a readable and convenient way to format values.",
+      "keyConcepts": "",
+      "code": "name = \"Raj\"\nage = 21\nprint(f\"{name} is {age} years old\")",
+      "output": ""
+    },
+    {
+      "id": 19,
+      "title": "What is the difference between encode() and decode()?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "encode() converts a string into bytes using a character encoding such as UTF-8. decode() converts bytes back into a string using the corresponding encoding.",
+      "keyConcepts": "Unicode, bytes, UTF-8.",
+      "code": "text = \"Python\"\nencoded = tex\nt.encode(\"utf-8\")\ndecoded = encode\nd.decode(\"utf-8\")",
+      "output": ""
+    },
+    {
+      "id": 20,
+      "title": "What is the time complexity of common string operations?",
+      "topicId": 1,
+      "topicName": "Strings",
+      "answer": "\"String indexing takes constant time, while searching and slicing generally take time proportional to the string length or slice length. Concatenation creates a new string and can take linear time in the resulting string length.\"\n\n| Operation     | Typical complexity |\n| ------------- | ------------------ |\n| Indexing      | O(1)               |\n| Length        | O(1)               |\n| Slicing       | O(k)               |\n| Searching     | O(n)               |\n| Concatenation | O(n + m)           |\n| Reversing     | O(n)               |\n| Membership    | O(n)               |\n\nHere, n and m represent string lengths, and k represents the resulting slice length.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 21,
+      "title": "What is a list in Python?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "A list is an ordered, mutable collection that can store multiple elements, including elements of different data types. Lists allow duplicate values and support indexing and slicing.",
+      "keyConcepts": "",
+      "code": "data = [10, \"Python\", 20.5, True]",
+      "output": ""
+    },
+    {
+      "id": 22,
+      "title": "Why are lists mutable?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "Lists are mutable because we can modify their contents after creation. We can add, remove or update elements without creating an entirely new list.",
+      "keyConcepts": "",
+      "code": "numbers = [10, 20, 30]numbers[0] = 100\nnumbers.append(40)",
+      "output": ""
+    },
+    {
+      "id": 23,
+      "title": "How does Python internally implement a list?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "In CPython, a list is implemented as a dynamic array of object references. It stores references to Python objects rather than storing all their actual values directly inside the list array. Python allocates extra capacity to make repeated appends efficient.",
+      "keyConcepts": "Dynamic array, object references, over-allocation.",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 24,
+      "title": "What is the difference between a list and an array?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "A Python list can store elements of different data types and stores references to Python objects. A typed array generally stores elements of a specific data type more compactly. For numerical computing, NumPy arrays are often more memory-efficient and support vectorized operations.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 25,
+      "title": "What is the difference between append() and extend()?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "append() adds its argument as a single element at the end of a list. extend() iterates over an iterable and adds each of its elements individually.",
+      "keyConcepts": "",
+      "code": "a = [1, 2]\na.append([3, 4])\nprint(a)\n\n# [1, 2, [3, 4]]\nb = [1, 2]\nb.extend([3, 4])\n\nprint(b)\n\n# [1, 2, 3, 4]",
+      "output": ""
+    },
+    {
+      "id": 26,
+      "title": "What is the difference between insert() and append()?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "append() adds an element at the end of the list, whereas insert() adds an element at a specified position and shifts subsequent elements to make room.",
+      "keyConcepts": "",
+      "code": "numbers = [10, 20]\nnumbers.insert(1, 15)\nnumbers.append(30)",
+      "output": ""
+    },
+    {
+      "id": 27,
+      "title": "What is the difference between remove(), pop() and del?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "remove() deletes the first matching value, pop() removes and returns an element using its index, and del is a statement that can delete an element, a slice or even an entire variable binding.",
+      "keyConcepts": "",
+      "code": "numbers = [10, 20, 30, 40]\nnumbers.remove(20)\nvalue = number\ns.pop(0)del numbers[0]",
+      "output": ""
+    },
+    {
+      "id": 28,
+      "title": "What happens when we call pop() without an index?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "When pop() is called without an index, it removes and returns the last element of the list. If the list is empty, Python raises an IndexError.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 29,
+      "title": "What is the difference between clear() and del?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "clear() removes all elements from the list but keeps the list object itself. del can remove a particular element, a slice or the entire variable binding.",
+      "keyConcepts": "",
+      "code": "a = [1, 2, 3]\nb = a\na.clear()\nprint(b)\n\n# []",
+      "output": ""
+    },
+    {
+      "id": 30,
+      "title": "What is list slicing?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "List slicing extracts a portion of a list using start, stop and step values. It returns a new list containing references to the selected elements.",
+      "keyConcepts": "",
+      "code": "numbers = [10, 20, 30, 40, 50]\nprint(numbers[1:4])\n\nprint(numbers[::-1])",
+      "output": ""
+    },
+    {
+      "id": 31,
+      "title": "Does slicing create a new list?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "Yes. Slicing creates a new list, but it performs a shallow copy. This means the outer list is new, while references to nested mutable objects are still shared.",
+      "keyConcepts": "",
+      "code": "a = [[1, 2], [3, 4]]\nb = a[:]b[0].append(100)\nprint(a)",
+      "output": "[[1, 2, 100], [3, 4]]"
+    },
+    {
+      "id": 32,
+      "title": "What is a nested list?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "A nested list is a list that contains other lists as its elements. It is commonly used to represent matrices, tables and multidimensional data.",
+      "keyConcepts": "",
+      "code": "matrix = [    [1, 2, 3],    [4, 5, 6]]",
+      "output": ""
+    },
+    {
+      "id": 33,
+      "title": "How do you access elements in a nested list?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "We use multiple indexes, where the first index selects the inner list and the second index selects the element inside it.",
+      "keyConcepts": "",
+      "code": "matrix = [    [10, 20],    [30, 40]]\nprint(matrix[1][0])\n\n# 30",
+      "output": ""
+    },
+    {
+      "id": 34,
+      "title": "What is the difference between list() and []?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "Both can create lists. Empty square brackets create an empty list directly, while list() can also convert an iterable into a list.",
+      "keyConcepts": "",
+      "code": "a = []\nb = list(\"ABC\")\nprint(b)\n\n# ['A', 'B', 'C']",
+      "output": ""
+    },
+    {
+      "id": 35,
+      "title": "What is list comprehension?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "List comprehension provides a concise way to create lists using an expression, a loop and optional filtering conditions.",
+      "keyConcepts": "",
+      "code": "squares = [x * x for x in range(5)]",
+      "output": ""
+    },
+    {
+      "id": 36,
+      "title": "How do you remove duplicates from a list?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "We can convert the list into a set to remove duplicates, but sets do not preserve the original positional order as a general guarantee. If we want to preserve insertion order, we can use dict.fromkeys().",
+      "keyConcepts": "",
+      "code": "numbers = [1, 2, 2, 3, 1]\nunique = list(dict.fromkeys(numbers))\nprint(unique)",
+      "output": ""
+    },
+    {
+      "id": 37,
+      "title": "What is the difference between sort() and sorted()?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "sort() modifies the original list in place and returns None. sorted() returns a new sorted list without modifying the original iterable.",
+      "keyConcepts": "",
+      "code": "numbers = [3, 1, 2]\nresult = sorted(numbers)\nnumbers.sort()\nprint(result)\n\nprint(numbers)",
+      "output": ""
+    },
+    {
+      "id": 38,
+      "title": "Why does list.sort() return None?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "sort() modifies the existing list in place instead of creating a new list. It returns None to make that behaviour explicit and discourage accidental assignment of its return value.",
+      "keyConcepts": "",
+      "code": "numbers = [3, 1, 2]\nresult = number\ns.sort()\nprint(result)\n\n# None",
+      "output": ""
+    },
+    {
+      "id": 39,
+      "title": "What is list multiplication?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "List multiplication repeats the elements of a list a specified number of times. However, when the elements are mutable nested objects, multiplication repeats their references rather than creating independent copies.",
+      "keyConcepts": "",
+      "code": "a = [[0]] * 3a[0][0] = 100\nprint(a)",
+      "output": "[[100], [100], [100]]"
+    },
+    {
+      "id": 40,
+      "title": "Why is [[]] * 3 different from [[] for _ in range(3)]?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "List multiplication creates multiple references to the same inner list. List comprehension creates a separate inner list during each iteration.",
+      "keyConcepts": "",
+      "code": "a = [[]] * 3\nb = [[] for _ in range(3)]a[0].append(10)b[0].append(10)\nprint(a)\n\n# [[10], [10], [10]]\n\nprint(b)\n\n# [[10], [], []]",
+      "output": ""
+    },
+    {
+      "id": 41,
+      "title": "What is the difference between copy() and assignment?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "Assignment creates another reference to the same list, whereas copy() creates a new outer list. However, copy() is shallow, so nested mutable elements remain shared.",
+      "keyConcepts": "",
+      "code": "a = [1, 2, 3]\nb = ac = a.copy()",
+      "output": ""
+    },
+    {
+      "id": 42,
+      "title": "How do you find the frequency of elements in a list?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "We can use the count() method to count occurrences of a particular element. If we need frequencies for many different elements, collections.Counter is generally more convenient.",
+      "keyConcepts": "",
+      "code": "numbers = [1, 2, 2, 3, 2]\nprint(numbers.count(2)\n\n)",
+      "output": ""
+    },
+    {
+      "id": 43,
+      "title": "What is list aliasing?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "List aliasing occurs when multiple variable names refer to the same list object. If we modify the list through one variable, the changes are visible through the other variable as well.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 44,
+      "title": "What is the time complexity of common list operations?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "\"List indexing is O(1), while searching takes O(n). Appending is O(1) amortized, and inserting or deleting near the beginning generally takes O(n) because elements need to be shifted.\"\n\n| Operation           | Typical complexity |\n| ------------------- | ------------------ |\n| Indexing            | O(1)               |\n| Append              | O(1) amortized     |\n| Pop last            | O(1)               |\n| Insert at beginning | O(n)               |\n| Remove by value     | O(n)               |\n| Search              | O(n)               |\n| Sort                | O(n log n)         |\n| Copy                | O(n)               |\n| Slicing             | O(k)               |",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 45,
+      "title": "When should we use a list?",
+      "topicId": 2,
+      "topicName": "Lists",
+      "answer": "We should use a list when we need an ordered collection that supports duplicates, indexing and modification. It is a good choice for storing sequences of items where frequent access by position is required.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 46,
+      "title": "What is a tuple in Python?",
+      "topicId": 3,
+      "topicName": "Tuples",
+      "answer": "A tuple is an ordered and immutable collection that can store multiple elements of different data types. It supports indexing, slicing and duplicate values.",
+      "keyConcepts": "",
+      "code": "data = (10, 20, \"Python\", True)",
+      "output": ""
+    },
+    {
+      "id": 47,
+      "title": "Why are tuples immutable?",
+      "topicId": 3,
+      "topicName": "Tuples",
+      "answer": "Tuples are immutable because their element references cannot be replaced, added or removed after creation. This makes them useful for representing fixed collections of values.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 48,
+      "title": "What is the difference between a list and a tuple?",
+      "topicId": 3,
+      "topicName": "Tuples",
+      "answer": "\"A list is mutable, whereas a tuple is immutable. Lists are suitable for collections that change frequently, while tuples are useful for fixed records and collections that should not change.\"\n\n| Feature    | List    | Tuple     |\n| ---------- | ------- | --------- |\n| Syntax     | `[]`    | `()`      |\n| Mutable    | Yes     | No        |\n| Ordered    | Yes     | Yes       |\n| Duplicates | Allowed | Allowed   |\n| Hashable   | No      | Sometimes |\n| Methods    | More    | Fewer     |",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 49,
+      "title": "How do you create a tuple with one element?",
+      "topicId": 3,
+      "topicName": "Tuples",
+      "answer": "We need to include a trailing comma. Without the comma, Python treats the expression as an ordinary value inside parentheses.",
+      "keyConcepts": "",
+      "code": "a = (10,)\nb = (10)\nprint(type(a)\n\n)\n# tuple\n\nprint(type(b)\n\n)\n# int",
+      "output": ""
+    },
+    {
+      "id": 50,
+      "title": "What is tuple packing?",
+      "topicId": 3,
+      "topicName": "Tuples",
+      "answer": "Tuple packing means combining multiple values into a single tuple. Python automatically packs comma-separated values into a tuple.",
+      "keyConcepts": "",
+      "code": "student = \"Raj\", 21, \"CSE\"\n\nprint(student)",
+      "output": ""
+    },
+    {
+      "id": 51,
+      "title": "What is tuple unpacking?",
+      "topicId": 3,
+      "topicName": "Tuples",
+      "answer": "Tuple unpacking means extracting elements from a tuple into separate variables. The number of variables should normally match the number of elements unless extended unpacking is used.",
+      "keyConcepts": "",
+      "code": "student = (\"Raj\", 21, \"CSE\")name, age, branch = student",
+      "output": ""
+    },
+    {
+      "id": 52,
+      "title": "What is extended unpacking?",
+      "topicId": 3,
+      "topicName": "Tuples",
+      "answer": "Extended unpacking allows us to collect multiple remaining elements into one variable using the asterisk operator.",
+      "keyConcepts": "",
+      "code": "numbers = (10, 20, 30, 40, 50)first, *middle, last = numbers\nprint(first)\n\nprint(middle)\n\nprint(last)",
+      "output": ""
+    },
+    {
+      "id": 53,
+      "title": "Can we modify elements inside a tuple?",
+      "topicId": 3,
+      "topicName": "Tuples",
+      "answer": "We cannot replace the elements of a tuple, but if an element references a mutable object, we can modify that object's internal state. Tuple immutability does not make nested mutable objects immutable.",
+      "keyConcepts": "",
+      "code": "data = ([1, 2], 10)data[0].append(3)\nprint(data)",
+      "output": ""
+    },
+    {
+      "id": 54,
+      "title": "Can tuples contain different data types?",
+      "topicId": 3,
+      "topicName": "Tuples",
+      "answer": "Yes. Python tuples can contain heterogeneous elements, which means we can store integers, strings, lists, dictionaries and other objects inside the same tuple.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 55,
+      "title": "Can a tuple be used as a dictionary key?",
+      "topicId": 3,
+      "topicName": "Tuples",
+      "answer": "Yes, but only if all its elements are hashable. A tuple containing only immutable, hashable elements can be used as a dictionary key. A tuple containing a list cannot.",
+      "keyConcepts": "",
+      "code": "valid = {(1, 2): \"Valid\"}\n# Invalid:# data = {(1, [2, 3]): \"Invalid\"}",
+      "output": ""
+    },
+    {
+      "id": 56,
+      "title": "What are the built-in tuple methods?",
+      "topicId": 3,
+      "topicName": "Tuples",
+      "answer": "Tuples provide two main methods: count() returns how many times a value appears, and index() returns the position of the first matching value.",
+      "keyConcepts": "",
+      "code": "data = (10, 20, 10, 30)\nprint(data.count(10)\n\n)\nprint(data.index(20)\n\n)",
+      "output": ""
+    },
+    {
+      "id": 57,
+      "title": "Why might we use tuples instead of lists?",
+      "topicId": 3,
+      "topicName": "Tuples",
+      "answer": "We use tuples when data should represent a fixed collection of values. They communicate that the collection is not intended to change, and hashable tuples can also be used as dictionary keys.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 58,
+      "title": "Are tuples always faster than lists?",
+      "topicId": 3,
+      "topicName": "Tuples",
+      "answer": "Not necessarily for every operation. Tuples can have lower memory overhead than lists in CPython, but performance differences depend on the operation and implementation. We should choose based on the required behaviour first.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 59,
+      "title": "What is tuple comparison?",
+      "topicId": 3,
+      "topicName": "Tuples",
+      "answer": "Python compares tuples lexicographically. It compares corresponding elements from left to right and stops at the first pair of unequal elements.",
+      "keyConcepts": "",
+      "code": "print((1, 5)\n\n < (2, 1))\n# True\n\nprint((1, 5)\n\n < (1, 6))\n# True",
+      "output": ""
+    },
+    {
+      "id": 60,
+      "title": "What is the time complexity of tuple operations?",
+      "topicId": 3,
+      "topicName": "Tuples",
+      "answer": "Tuple indexing and length operations take O(1). Searching and counting take O(n), while slicing takes O(k), where k is the number of elements in the resulting tuple.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 61,
+      "title": "What is a set in Python?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "A set is an unordered collection of unique, hashable elements. It automatically removes duplicate values and supports efficient membership checking.",
+      "keyConcepts": "",
+      "code": "numbers = {10, 20, 30, 10}\nprint(numbers)",
+      "output": ""
+    },
+    {
+      "id": 62,
+      "title": "Why do sets not allow duplicate elements?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "Sets use hashing to organize their elements and maintain uniqueness. When we insert an element that is already present according to equality and hashing, the set does not store it again.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 63,
+      "title": "How do you create an empty set?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "We use set() to create an empty set. Empty curly braces create an empty dictionary, not a set.",
+      "keyConcepts": "",
+      "code": "a = set()\nb = {}\nprint(type(a)\n\n)\n# set\n\nprint(type(b)\n\n)\n# dict",
+      "output": ""
+    },
+    {
+      "id": 64,
+      "title": "Why must set elements be hashable?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "Sets use hash values to locate elements efficiently. A hashable object must have a stable hash value during its lifetime and compatible equality behaviour. Mutable lists and dictionaries cannot be set elements because they are unhashable.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 65,
+      "title": "Can we store a tuple inside a set?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "Yes, provided all elements inside the tuple are hashable. If a tuple contains a mutable unhashable object such as a list, it cannot be inserted into a set.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 66,
+      "title": "What is the add() method?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "add() inserts a single element into a set. If the element already exists, the set remains unchanged.",
+      "keyConcepts": "",
+      "code": "numbers = {1, 2}numbers.add(3)\nnumbers.add(3)\nprint(numbers)",
+      "output": ""
+    },
+    {
+      "id": 67,
+      "title": "What is the difference between add() and update()?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "add() inserts one element as a single value, whereas update() accepts one or more iterables and inserts their individual elements into the set.",
+      "keyConcepts": "",
+      "code": "a = {1, 2}a.add((3, 4))\nprint(a)\n\nb = {1, 2}b.update([3, 4])\nprint(b)",
+      "output": ""
+    },
+    {
+      "id": 68,
+      "title": "What is set union?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "Union combines elements from two sets and returns a new set containing all unique elements from both sets. We can use the pipe operator or union() method.",
+      "keyConcepts": "",
+      "code": "a = {1, 2, 3}b = {3, 4, 5}\nprint(a | b)",
+      "output": ""
+    },
+    {
+      "id": 69,
+      "title": "What is set intersection?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "Intersection returns the elements that are common to both sets. We can use the ampersand operator or intersection() method.",
+      "keyConcepts": "",
+      "code": "print({1, 2, 3} & {2, 3, 4})",
+      "output": ""
+    },
+    {
+      "id": 70,
+      "title": "What is set difference?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "Difference returns elements present in the first set but absent from the second set. It is directional, so reversing the sets can produce a different result.",
+      "keyConcepts": "",
+      "code": "a = {1, 2, 3}b = {2, 3, 4}\nprint(a - b)\n\n# {1}\n\nprint(b - a)\n\n# {4}",
+      "output": ""
+    },
+    {
+      "id": 71,
+      "title": "What is symmetric difference?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "Symmetric difference returns elements that belong to either set but not to both. It excludes the common elements.",
+      "keyConcepts": "",
+      "code": "a = {1, 2, 3}b = {3, 4, 5}\nprint(a ^ b)",
+      "output": ""
+    },
+    {
+      "id": 72,
+      "title": "What is the difference between remove() and discard()?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "Both methods remove an element from a set. The difference is that remove() raises a KeyError if the element does not exist, whereas discard() does nothing.",
+      "keyConcepts": "",
+      "code": "numbers = {1, 2, 3}numbers.discard(10)\n# numbers.remove(10)  # KeyError",
+      "output": ""
+    },
+    {
+      "id": 73,
+      "title": "What does pop() do in a set?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "Set pop() removes and returns an arbitrary element from the set. It does not guarantee that the first or last inserted element will be removed. Calling it on an empty set raises KeyError.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 74,
+      "title": "What is a subset?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "A set A is a subset of set B if every element of A is also present in B. We can check this using the less-than-or-equal operator or issubset().",
+      "keyConcepts": "",
+      "code": "a = {1, 2}b = {1, 2, 3}\nprint(a.issubset(b)\n\n)",
+      "output": ""
+    },
+    {
+      "id": 75,
+      "title": "What is a superset?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "A set A is a superset of B if A contains every element of B. We can check this using the greater-than-or-equal operator or issuperset().",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 76,
+      "title": "What is a disjoint set?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "Two sets are disjoint when they have no common elements. We can check this using the isdisjoint() method.",
+      "keyConcepts": "",
+      "code": "a = {1, 2}b = {3, 4}\nprint(a.isdisjoint(b)\n\n)",
+      "output": ""
+    },
+    {
+      "id": 77,
+      "title": "How does set membership checking work internally?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "In CPython, sets are implemented using hash tables. Python calculates an element's hash and uses it to locate a possible position. If collisions occur, it performs additional checks using equality. Average membership lookup is O(1), while worst-case behaviour can be O(n).",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 78,
+      "title": "What is the time complexity of common set operations?",
+      "topicId": 4,
+      "topicName": "Sets",
+      "answer": "\"Set membership, insertion and deletion are generally O(1) on average. Set operations such as union, intersection and difference depend on the sizes of the participating sets.\"\n\n| Operation    | Average complexity         |\n| ------------ | -------------------------- |\n| Add          | O(1)                       |\n| Remove       | O(1)                       |\n| Membership   | O(1)                       |\n| Union        | O(n + m)                   |\n| Intersection | O(min(n, m)) approximately |\n| Difference   | O(n) approximately         |\n| Copy         | O(n)                       |",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 79,
+      "title": "What is a dictionary in Python?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "A dictionary is a mutable mapping that stores data as key-value pairs. Each key must be hashable and unique within the dictionary, while values can be of any data type.",
+      "keyConcepts": "",
+      "code": "student = {    \"name\": \"Raj\",    \"age\": 21,    \"branch\": \"CSE\"}",
+      "output": ""
+    },
+    {
+      "id": 80,
+      "title": "Are dictionaries ordered in Python?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "Yes. Python dictionaries preserve insertion order as a language guarantee from Python 3.7 onwards. This means elements are iterated in the order in which keys were first inserted.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 81,
+      "title": "Why must dictionary keys be hashable?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "Dictionaries use hash values to locate keys efficiently. Hashable keys provide a stable hash value and consistent equality behaviour, allowing the dictionary to find and retrieve values correctly.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 82,
+      "title": "Can we use a list as a dictionary key?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "No. Lists are mutable and unhashable, so Python does not allow them as dictionary keys. We can use a tuple instead if all its elements are hashable.",
+      "keyConcepts": "",
+      "code": "# Invalid# data = {[1, 2]: \"value\"}# Validdata = {(1, 2): \"value\"}",
+      "output": ""
+    },
+    {
+      "id": 83,
+      "title": "Can dictionary values be mutable?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "Yes. Dictionary values can be lists, sets, dictionaries or other mutable objects. Only the keys need to be hashable.",
+      "keyConcepts": "",
+      "code": "student = {    \"name\": \"Raj\",    \"marks\": [80, 90, 95]}",
+      "output": ""
+    },
+    {
+      "id": 84,
+      "title": "What happens when we insert an existing key into a dictionary?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "If we insert an existing key again, Python updates the corresponding value instead of creating a duplicate key.",
+      "keyConcepts": "",
+      "code": "student = {\"age\": 20}student[\"age\"] = 21\nprint(student)",
+      "output": ""
+    },
+    {
+      "id": 85,
+      "title": "What is the difference between accessing a dictionary using [] and get()?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "Using square brackets raises a KeyError if the key does not exist. The get() method returns None or a specified default value instead.",
+      "keyConcepts": "",
+      "code": "student = {\"name\": \"Raj\"}\nprint(student.get(\"age\", 0)\n\n)\n# student[\"age\"]  # KeyError",
+      "output": ""
+    },
+    {
+      "id": 86,
+      "title": "What does the keys() method return?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "keys() returns a dynamic dictionary view containing all keys. The view reflects changes made to the dictionary after the view was created.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 87,
+      "title": "What does the values() method return?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "values() returns a dynamic view of all dictionary values. We can iterate over it to access the values without manually accessing each key.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 88,
+      "title": "What does the items() method return?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "items() returns a dynamic view of key-value pairs as tuples. It is commonly used when we need both keys and values during dictionary iteration.",
+      "keyConcepts": "",
+      "code": "student = {\"name\": \"Raj\", \"age\": 21}for key, value in student.items():\nprint(key, value)",
+      "output": ""
+    },
+    {
+      "id": 89,
+      "title": "What is the difference between update() and setdefault()?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "update() inserts new key-value pairs or updates existing ones. setdefault() returns the existing value if the key exists; otherwise, it inserts the key with the provided default value.",
+      "keyConcepts": "",
+      "code": "data = {\"name\": \"Raj\"}data.setdefault(\"age\", 21)\ndata.update({\"name\": \"Aman\"})",
+      "output": ""
+    },
+    {
+      "id": 90,
+      "title": "What is the pop() method in a dictionary?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "Dictionary pop() removes a specified key and returns its associated value. If the key does not exist, it raises KeyError unless a default value is supplied.",
+      "keyConcepts": "",
+      "code": "data = {\"name\": \"Raj\", \"age\": 21}age = dat\na.pop(\"age\")",
+      "output": ""
+    },
+    {
+      "id": 91,
+      "title": "What is the difference between pop() and popitem()?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "pop() removes a specified key, whereas popitem() removes and returns the most recently inserted key-value pair. If the dictionary is empty, popitem() raises KeyError.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 92,
+      "title": "What does fromkeys() do?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "fromkeys() creates a new dictionary using the supplied keys and assigns the same value to every key.",
+      "keyConcepts": "",
+      "code": "keys = [\"a\", \"b\", \"c\"]\ndata = dic\nt.fromkeys(keys, 0)\nprint(data)",
+      "output": ""
+    },
+    {
+      "id": 93,
+      "title": "What is dictionary comprehension?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "Dictionary comprehension provides a concise way to create dictionaries from iterables using expressions and optional conditions.",
+      "keyConcepts": "",
+      "code": "squares = {x: x * x for x in range(1, 5)}",
+      "output": ""
+    },
+    {
+      "id": 94,
+      "title": "What is a nested dictionary?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "A nested dictionary is a dictionary containing other dictionaries as values. It is useful for representing hierarchical or structured information.",
+      "keyConcepts": "",
+      "code": "students = {    \"student1\": {        \"name\": \"Raj\",        \"age\": 21    }}",
+      "output": ""
+    },
+    {
+      "id": 95,
+      "title": "How do you merge two dictionaries?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "We can merge dictionaries using the update() method, the unpacking operator or the union operator introduced in Python 3.9. When keys overlap, the right-hand dictionary's value takes precedence.",
+      "keyConcepts": "",
+      "code": "a = {\"x\": 1}b = {\"y\": 2}result = a | b",
+      "output": ""
+    },
+    {
+      "id": 96,
+      "title": "What is the difference between | and |= for dictionaries?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "The pipe operator creates a new merged dictionary, whereas the pipe-equals operator updates the existing dictionary in place.",
+      "keyConcepts": "",
+      "code": "a = {\"x\": 1}b = {\"y\": 2}c = a | ba |= b",
+      "output": ""
+    },
+    {
+      "id": 97,
+      "title": "How does dictionary lookup work internally?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "In CPython, dictionaries use a hash-table-based implementation. Python calculates the hash of the key, uses it to locate a candidate position and checks equality when necessary. If collisions occur, it uses a probing strategy to find the appropriate entry.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 98,
+      "title": "What is a hash collision?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "A hash collision happens when two different keys produce the same hash value. Dictionaries handle collisions internally by checking candidate entries and finding an appropriate position. Hash collisions do not mean the keys are necessarily equal.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 99,
+      "title": "What is the average and worst-case time complexity of dictionary operations?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "\"Dictionary insertion, deletion and lookup generally take O(1) average time. In the worst case, due to excessive hash collisions, these operations can take O(n) time.\"\n\n| Operation  | Average | Worst case |\n| ---------- | ------- | ---------- |\n| Lookup     | O(1)    | O(n)       |\n| Insert     | O(1)    | O(n)       |\n| Delete     | O(1)    | O(n)       |\n| Membership | O(1)    | O(n)       |\n| Iteration  | O(n)    | O(n)       |",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 100,
+      "title": "Can different keys have the same hash value?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "Yes. Different objects can have the same hash value. Python handles this using equality checks. A dictionary treats keys as the same key when they compare equal and have compatible hash values.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 101,
+      "title": "Why are True, 1 and 1.0 treated as the same dictionary key?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "Because these values compare equal in Python and have equal hash values. Therefore, they refer to the same dictionary entry.",
+      "keyConcepts": "",
+      "code": "data = {    True: \"A\",    1: \"B\",    1.0: \"C\"}\nprint(data)\n\nprint(len(data)\n\n)",
+      "output": "{True: 'C'}\n1"
+    },
+    {
+      "id": 102,
+      "title": "What is the difference between a dictionary and a list?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "A list stores ordered elements accessed mainly through integer indexes, whereas a dictionary stores key-value pairs accessed through hashable keys. Lists are useful for sequential data, while dictionaries are useful for fast key-based retrieval.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 103,
+      "title": "When should we use a dictionary?",
+      "topicId": 5,
+      "topicName": "Dictionaries",
+      "answer": "We should use a dictionary when we need to associate keys with values, perform frequent key-based lookups, count frequencies, group data or represent structured records.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 104,
+      "title": "What is a frozenset in Python?",
+      "topicId": 6,
+      "topicName": "Frozen Sets",
+      "answer": "A frozenset is an immutable version of a set. It stores unique, hashable elements, but we cannot add or remove elements after creating it.",
+      "keyConcepts": "",
+      "code": "data = frozenset([1, 2, 3, 2])\nprint(data)",
+      "output": ""
+    },
+    {
+      "id": 105,
+      "title": "What is the difference between set and frozenset?",
+      "topicId": 6,
+      "topicName": "Frozen Sets",
+      "answer": "\"A set is mutable, whereas a frozenset is immutable. Both store unique elements and support mathematical set operations, but only a frozenset can be used as a dictionary key or as an element of another set.\"\n\n| Feature            | Set | Frozenset |\n| ------------------ | --- | --------- |\n| Mutable            | Yes | No        |\n| Unique elements    | Yes | Yes       |\n| Hashable           | No  | Yes       |\n| Add elements       | Yes | No        |\n| Remove elements    | Yes | No        |\n| Union/intersection | Yes | Yes       |",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 106,
+      "title": "How do you create a frozenset?",
+      "topicId": 6,
+      "topicName": "Frozen Sets",
+      "answer": "We use the built-in frozenset() constructor. It accepts an iterable and creates an immutable set containing its unique elements.",
+      "keyConcepts": "",
+      "code": "numbers = frozenset([1, 2, 3, 3])",
+      "output": ""
+    },
+    {
+      "id": 107,
+      "title": "Can we add elements to a frozenset?",
+      "topicId": 6,
+      "topicName": "Frozen Sets",
+      "answer": "No. Frozensets are immutable, so methods like add(), remove() and update() are not available. If we need different contents, we must create another frozenset.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 108,
+      "title": "Can a frozenset be used as a dictionary key?",
+      "topicId": 6,
+      "topicName": "Frozen Sets",
+      "answer": "Yes. A frozenset is hashable, so it can be used as a dictionary key, provided its elements are hashable.",
+      "keyConcepts": "",
+      "code": "data = {    frozenset([1, 2]): \"Group A\"}",
+      "output": ""
+    },
+    {
+      "id": 109,
+      "title": "Can a frozenset contain a mutable list?",
+      "topicId": 6,
+      "topicName": "Frozen Sets",
+      "answer": "No. All elements inside a frozenset must be hashable. Lists are unhashable, so inserting a list raises TypeError.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 110,
+      "title": "Can we perform union and intersection on frozensets?",
+      "topicId": 6,
+      "topicName": "Frozen Sets",
+      "answer": "Yes. Frozensets support operations such as union, intersection, difference and symmetric difference. These operations return new sets or frozensets without modifying the original object.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 111,
+      "title": "What is a practical use case of frozenset?",
+      "topicId": 6,
+      "topicName": "Frozen Sets",
+      "answer": "Frozensets are useful when we need an immutable collection of unique values. For example, we can use a frozenset to represent a combination of permissions or categories that should be used as a dictionary key.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 112,
+      "title": "Can a frozenset contain another frozenset?",
+      "topicId": 6,
+      "topicName": "Frozen Sets",
+      "answer": "Yes. Since frozensets are hashable, one frozenset can be stored as an element inside another set or frozenset.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 113,
+      "title": "What is the difference between hashability and immutability?",
+      "topicId": 6,
+      "topicName": "Frozen Sets",
+      "answer": "Immutability means an object's state cannot be changed, whereas hashability means an object has a stable hash value and suitable equality behaviour. Although immutable objects are often hashable, not every immutable object is automatically hashable. For example, a tuple containing a list is unhashable.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 114,
+      "title": "What is the collections module?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "The collections module is part of Python's standard library. It provides specialized container data structures that extend the functionality of built-in collections such as lists and dictionaries.",
+      "keyConcepts": "",
+      "code": "import collections",
+      "output": ""
+    },
+    {
+      "id": 115,
+      "title": "What is Counter?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "Counter is a dictionary subclass designed to count the frequency of elements in an iterable or mapping. It stores elements as keys and their counts as values.",
+      "keyConcepts": "",
+      "code": "from collections import Counternumbers\n\n= [1, 2, 2, 3, 3, 3]\nresult = Counter(numbers)\nprint(result)",
+      "output": ""
+    },
+    {
+      "id": 116,
+      "title": "What is the most_common() method?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "most_common() returns the elements and their counts in descending order of frequency. We can provide an optional number to get only the top elements.",
+      "keyConcepts": "",
+      "code": "from collections import Counterdata\n\n= \"banana\"\ncount = Counter(data)\nprint(count.most_common(2)\n\n)",
+      "output": ""
+    },
+    {
+      "id": 117,
+      "title": "What happens when we access a missing key in Counter?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "Counter returns zero for a missing element instead of raising a KeyError. This is useful when counting elements that may not have appeared before.",
+      "keyConcepts": "",
+      "code": "from collections import Countercount\n\n= Counter([\"a\", \"b\"])\nprint(count[\"c\"])\n\n# 0",
+      "output": ""
+    },
+    {
+      "id": 118,
+      "title": "What is defaultdict?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "defaultdict is a dictionary subclass that automatically creates a default value when a missing key is accessed. We provide a factory function that generates the default value.",
+      "keyConcepts": "",
+      "code": "from collections import defaultdictdata\n\n= defaultdict(list)data[\"fruits\"].append(\"Apple\")\nprint(data)",
+      "output": ""
+    },
+    {
+      "id": 119,
+      "title": "What is the difference between dict and defaultdict?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "A normal dictionary raises KeyError when we access a missing key using square brackets. defaultdict automatically creates a value using its default factory when a missing key is accessed.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 120,
+      "title": "What is default_factory?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "default_factory is the callable used by defaultdict to generate values for missing keys. Common examples include list, int and set.",
+      "keyConcepts": "",
+      "code": "from collections import defaultdictcount\n\n= defaultdict(int)\ngroups = defaultdict(list)\nunique = defaultdict(set)",
+      "output": ""
+    },
+    {
+      "id": 121,
+      "title": "What is OrderedDict?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "OrderedDict is a dictionary subclass that maintains insertion order. Modern normal dictionaries also preserve insertion order, but OrderedDict provides additional features such as moving elements to either end and order-sensitive equality with other OrderedDict instances.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 122,
+      "title": "What is the difference between dict and OrderedDict?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "Both preserve insertion order in modern Python. However, OrderedDict supports specialized ordering operations such as move_to_end() and has different equality behaviour when compared with another OrderedDict.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 123,
+      "title": "What is move_to_end()?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "move_to_end() moves an existing key to either the rightmost or leftmost position in an OrderedDict. By default, it moves the key to the end.",
+      "keyConcepts": "",
+      "code": "from collections import OrderedDictdata\n\n= OrderedDict([    (\"a\", 1),    (\"b\", 2),    (\"c\", 3)])\ndata.move_to_end(\"a\")\nprint(data)",
+      "output": ""
+    },
+    {
+      "id": 124,
+      "title": "What is deque?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "Deque stands for double-ended queue. It is a specialized collection that allows efficient insertion and removal of elements from both ends.",
+      "keyConcepts": "",
+      "code": "from collections import dequedata\n\n= deque([10, 20, 30])",
+      "output": ""
+    },
+    {
+      "id": 125,
+      "title": "Why use deque instead of a list?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "A deque provides approximately O(1) insertion and removal operations at both ends. A list is efficient at the end but requires O(n) time for inserting or removing elements at the beginning.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 126,
+      "title": "What are the important deque methods?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "Deque provides methods such as append(), appendleft(), pop(), popleft(), extend(), extendleft(), rotate() and clear(). These methods make it useful for implementing queues and other double-ended structures.",
+      "keyConcepts": "",
+      "code": "from collections import dequedata\n\n= deque([10, 20])\ndata.appendleft(5)\ndata.append(30)\nprint(data)",
+      "output": ""
+    },
+    {
+      "id": 127,
+      "title": "What is the difference between append() and appendleft() in deque?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "append() inserts an element at the right end of the deque, whereas appendleft() inserts it at the left end.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 128,
+      "title": "What is maxlen in deque?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "maxlen specifies the maximum number of elements a deque can hold. When a new element is added to a full bounded deque, elements from the opposite end are automatically discarded.",
+      "keyConcepts": "",
+      "code": "from collections import dequedata\n\n= deque([1, 2, 3], maxlen=3)\ndata.append(4)\nprint(data)",
+      "output": ""
+    },
+    {
+      "id": 129,
+      "title": "What is namedtuple?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "namedtuple is a factory function that creates tuple subclasses with named fields. It allows us to access tuple elements using meaningful attribute names instead of only numeric indexes.",
+      "keyConcepts": "",
+      "code": "from collections import namedtupleStudent\n\n= namedtuple(\"Student\", [\"name\", \"age\"])\ns = Student(\"Raj\", 21)\nprint(s.name)\n\nprint(s.age)",
+      "output": ""
+    },
+    {
+      "id": 130,
+      "title": "What is the advantage of namedtuple over a normal tuple?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "namedtuple makes code more readable because we can access values through descriptive field names. It also retains tuple behaviour, including immutability, indexing and unpacking.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 131,
+      "title": "What is the difference between namedtuple and dictionary?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "A namedtuple provides immutable, attribute-based access to fixed fields, whereas a dictionary provides mutable key-based storage. Namedtuples are useful for lightweight fixed records, while dictionaries are more flexible.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 132,
+      "title": "What is ChainMap?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "ChainMap combines multiple dictionaries or mappings into a single view. It searches the mappings in order and returns the value from the first mapping containing the requested key.",
+      "keyConcepts": "",
+      "code": "from collections import ChainMapdefaults\n\n= {\"theme\": \"light\"}user = {\"theme\": \"dark\"}settings = ChainMap(user, defaults)\nprint(settings[\"theme\"])",
+      "output": ""
+    },
+    {
+      "id": 133,
+      "title": "What is UserDict?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "UserDict is a wrapper around a dictionary that provides a convenient base class for creating customized dictionary-like objects. It is useful when we want to extend or customize dictionary behaviour.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 134,
+      "title": "When would you use Counter, defaultdict and deque?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "I would use Counter for frequency counting, defaultdict for grouping or automatically creating default values, and deque for queue-based operations where we need efficient insertion and removal from both ends.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 135,
+      "title": "Which data structure would you choose to implement a queue in Python?",
+      "topicId": 7,
+      "topicName": "Collections Module",
+      "answer": "I would generally choose collections.deque because it supports efficient append() and popleft() operations. Using a list and removing the first element with pop(0) would require shifting the remaining elements.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 136,
+      "title": "What is iteration in Python?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "Iteration is the process of accessing elements of a collection one by one. Python supports iteration through objects such as lists, tuples, strings, dictionaries and sets.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 137,
+      "title": "What is an iterable?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "An iterable is an object that can return an iterator. Examples include lists, tuples, strings, dictionaries and sets. Technically, an object is iterable if it supports the iteration protocol, typically through `__iter__()`.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 138,
+      "title": "What is an iterator?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "An iterator is an object that produces values one at a time. It maintains its iteration state and supports both `__iter__()` and `__next__()` methods.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 139,
+      "title": "What is the difference between iterable and iterator?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "\"An iterable is an object from which we can obtain an iterator, whereas an iterator is the object responsible for producing elements one by one. Every iterator is iterable, but not every iterable is an iterator.\"\n\n| Iterable                | Iterator                       |\n| ----------------------- | ------------------------------ |\n| Can provide an iterator | Produces elements              |\n| Usually reusable        | Usually consumed               |\n| Example: list           | Example: `iter(list)`          |\n| Supports `iter()`       | Supports `iter()` and `next()` |",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 140,
+      "title": "What is the iter() function?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "iter() returns an iterator from an iterable. It is the starting point of manual iteration.",
+      "keyConcepts": "",
+      "code": "numbers = [10, 20, 30]\niterator = iter(numbers)\nprint(type(iterator)\n\n)",
+      "output": ""
+    },
+    {
+      "id": 141,
+      "title": "What is the next() function?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "next() retrieves the next element from an iterator. Each call advances the iterator to the next position. When there are no more elements, it raises StopIteration.",
+      "keyConcepts": "",
+      "code": "numbers = [10, 20, 30]\nit = iter(numbers)\nprint(next(it)\n\n)\nprint(next(it)\n\n)\nprint(next(it)\n\n)",
+      "output": ""
+    },
+    {
+      "id": 142,
+      "title": "What is StopIteration?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "StopIteration is an exception that indicates an iterator has no more elements to produce. It is used internally to signal the end of iteration.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 143,
+      "title": "What is the difference between iter() and next()?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "iter() obtains an iterator from an iterable, whereas next() retrieves the next available element from that iterator.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 144,
+      "title": "How does a for loop work internally?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "A for loop first obtains an iterator from the iterable using iter(). It repeatedly retrieves elements using next(). When the iterator raises StopIteration, the loop terminates automatically.\" **Internal execution:** \\[Flowchart: Dictionary / Iterator lookup flow]YesNo",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 145,
+      "title": "Can we use next() directly on a list?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "No. A list is iterable but is not itself an iterator. We first need to call iter() to obtain an iterator and then use next().",
+      "keyConcepts": "",
+      "code": "numbers = [10, 20]\nit = iter(numbers)\nprint(next(it)\n\n)",
+      "output": ""
+    },
+    {
+      "id": 146,
+      "title": "What happens when we iterate over an iterator multiple times?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "An iterator maintains its current position. Once its elements are consumed, another iteration over the same iterator does not restart it automatically. We need to create a new iterator if we want to iterate again.",
+      "keyConcepts": "",
+      "code": "numbers = [1, 2, 3]\nit = iter(numbers)\nprint(list(it)\n\n)\nprint(list(it)\n\n)",
+      "output": "[1, 2, 3]\n[]"
+    },
+    {
+      "id": 147,
+      "title": "What is a custom iterator?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "A custom iterator is a user-defined object that implements the iterator protocol using `__iter__()` and `__next__()`. It allows us to control how values are generated during iteration.",
+      "keyConcepts": "",
+      "code": "class Count:\n\ndef __init__(self, limit):\n            self.current = 1        self.limit = limit\ndef __iter__(self):\n            return self\ndef __next__(self):\n            if self.current > self.limit:            raise StopIteration        value = sel\nf.current        self.current += 1        return valuefor i in Count(3):\nprint(i)",
+      "output": ""
+    },
+    {
+      "id": 148,
+      "title": "What is a generator?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "A generator is a special type of iterator that produces values lazily. We can create generators using functions containing yield or generator expressions. They are useful for processing large amounts of data without storing all results in memory.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 149,
+      "title": "What is the difference between yield and return?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "return terminates a function and sends back its result. yield produces a value while suspending the generator's execution state, allowing execution to continue from that point when the next value is requested.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 150,
+      "title": "What is lazy evaluation?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "Lazy evaluation means values are computed only when they are requested instead of being calculated immediately. Generators use lazy evaluation, which can improve memory efficiency.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 151,
+      "title": "What happens when we call a generator function?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "When we call a generator function, its body does not execute immediately. Instead, it returns a generator object. The function starts executing when we request its first value.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 152,
+      "title": "What is the difference between a generator and a list?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "A list stores all its elements in memory, whereas a generator produces elements one at a time. Generators are useful for large datasets or streams where storing every element would consume too much memory.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 153,
+      "title": "Can a generator be reused?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "A generator object is generally a one-time iterator. Once it is exhausted, it cannot restart automatically. We need to call the generator function again to create a new generator object.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 154,
+      "title": "What is yield from?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "yield from delegates yielding values to another iterable or generator. It provides a convenient way to iterate over another sequence or generator without manually writing a loop.",
+      "keyConcepts": "",
+      "code": "def numbers():\n        yield from [10, 20, 30]\nprint(list(numbers()\n\n))",
+      "output": ""
+    },
+    {
+      "id": 155,
+      "title": "What is the difference between an iterator and a generator?",
+      "topicId": 8,
+      "topicName": "Iteration",
+      "answer": "An iterator is any object that follows Python's iterator protocol. A generator is a convenient way to create an iterator using yield or a generator expression. Every generator is an iterator, but not every iterator is a generator.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 156,
+      "title": "What is sorting in Python?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "Sorting means arranging elements in a particular order, usually ascending or descending. Python provides sorted() and sort() to sort iterable data.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 157,
+      "title": "What is the difference between sort() and sorted()?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "sort() modifies a list in place and returns None. sorted() accepts any iterable and returns a new sorted list without modifying the original collection.",
+      "keyConcepts": "",
+      "code": "numbers = [5, 2, 8, 1]\na = sorted(numbers)\nnumbers.sort()\nprint(a)\n\nprint(numbers)",
+      "output": ""
+    },
+    {
+      "id": 158,
+      "title": "What is the reverse parameter in sorting?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "The reverse parameter controls the sorting direction. By default, it is False, which produces ascending order. Setting it to True produces descending order.",
+      "keyConcepts": "",
+      "code": "numbers = [5, 2, 8, 1]\nprint(sorted(numbers, reverse=True)\n\n)",
+      "output": ""
+    },
+    {
+      "id": 159,
+      "title": "What is the key parameter in sorted()?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "The key parameter accepts a function that extracts a value used for comparison during sorting. It allows us to sort objects according to a specific property.",
+      "keyConcepts": "",
+      "code": "names = [\"Abhi\", \"Raj\", \"Alexander\"]\nresult = sorted(names, key=len)\nprint(result)",
+      "output": ""
+    },
+    {
+      "id": 160,
+      "title": "How do you sort a list of dictionaries by a particular key?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "We can use the key parameter with a lambda function to extract the required dictionary value.",
+      "keyConcepts": "",
+      "code": "students = [    {\"name\": \"Raj\", \"marks\": 80},    {\"name\": \"Aman\", \"marks\": 95},    {\"name\": \"Ravi\", \"marks\": 70}]\nresult = sorted(    students,    key=lambda x: x[\"marks\"])",
+      "output": ""
+    },
+    {
+      "id": 161,
+      "title": "What is stable sorting?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "A sorting algorithm is stable if elements with equal sorting keys maintain their original relative order. Python's sorting implementation is stable, which is useful when sorting records using multiple criteria.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 162,
+      "title": "Which sorting algorithm does Python use?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "Python uses Timsort for sorting lists and other standard sorting operations. Timsort is a hybrid stable sorting algorithm that combines ideas from merge sort and insertion sort. It performs particularly well on partially ordered data.",
+      "keyConcepts": "Timsort, stability, adaptive sorting.",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 163,
+      "title": "What is the time complexity of Python sorting?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "Python sorting has O(n log n) worst-case time complexity. It can perform as well as O(n) on already ordered or highly structured data due to Timsort's adaptive behaviour.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 164,
+      "title": "How do you sort strings alphabetically?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "We can directly use sorted() or the sort() method. By default, sorting follows Unicode code-point ordering rather than language-specific dictionary collation rules.",
+      "keyConcepts": "",
+      "code": "names = [\"Ravi\", \"Aman\", \"Abhi\"]\nprint(sorted(names)\n\n)",
+      "output": ""
+    },
+    {
+      "id": 165,
+      "title": "How do you sort strings without considering case?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "We can use str.lower or str.casefold as the key function. This allows strings with different letter cases to be compared in a case-insensitive manner.",
+      "keyConcepts": "",
+      "code": "names = [\"banana\", \"Apple\", \"cherry\"]\nprint(sorted(names, key=st\nr.casefold)\n\n)",
+      "output": ""
+    },
+    {
+      "id": 166,
+      "title": "How do you sort a dictionary by keys?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "We can use sorted() on the dictionary's keys or items. Since dictionaries preserve insertion order, we can construct a new dictionary using the sorted key-value pairs.",
+      "keyConcepts": "",
+      "code": "data = {\"c\": 3, \"a\": 1, \"b\": 2}result = dict(sorted(data.items()))",
+      "output": ""
+    },
+    {
+      "id": 167,
+      "title": "How do you sort a dictionary by values?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "We can sort the dictionary's items using a key function that extracts the value from each key-value pair.",
+      "keyConcepts": "",
+      "code": "data = {    \"Raj\": 80,    \"Aman\": 95,    \"Ravi\": 70}result = dict(    sorted(data.items(), key=lambda x: x[1]))",
+      "output": ""
+    },
+    {
+      "id": 168,
+      "title": "What is the difference between reverse() and sort(reverse=True)?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "reverse() simply reverses the current order of list elements without comparing them. sort(reverse=True) sorts elements in descending order according to their values.",
+      "keyConcepts": "",
+      "code": "numbers = [3, 1, 2]\na = number\ns.copy()\na.reverse()\nb = sorted(numbers, reverse=True)\nprint(a)\n\n# [2, 1, 3]\n\nprint(b)\n\n# [3, 2, 1]",
+      "output": ""
+    },
+    {
+      "id": 169,
+      "title": "What is custom sorting?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "Custom sorting means defining our own sorting criteria using the key parameter. It allows us to sort complex objects based on attributes, multiple fields or calculated values.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 170,
+      "title": "How do you sort by multiple conditions?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "We can return a tuple from the key function. Python compares the tuple elements from left to right, allowing us to apply multiple sorting conditions.",
+      "keyConcepts": "",
+      "code": "students = [    (\"Raj\", 80),    (\"Aman\", 80),    (\"Ravi\", 90)]\nresult = sorted(    students,    key=lambda x: (-x[1], x[0]))",
+      "output": ""
+    },
+    {
+      "id": 171,
+      "title": "How do you sort numbers by their absolute values?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "We can pass abs as the key function. Python will use the absolute value for comparison while preserving the original values in the result.",
+      "keyConcepts": "",
+      "code": "numbers = [-10, 5, -2, 8]\nprint(sorted(numbers, key=abs)\n\n)",
+      "output": ""
+    },
+    {
+      "id": 172,
+      "title": "Can we sort a set directly using sort()?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "No. Sets do not provide a sort() method because they are not ordered sequences. However, we can use sorted() to obtain a sorted list from a set.",
+      "keyConcepts": "",
+      "code": "numbers = {5, 2, 8, 1}\nprint(sorted(numbers)\n\n)",
+      "output": ""
+    },
+    {
+      "id": 173,
+      "title": "What happens when we sort a list containing incompatible types?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "If Python cannot compare two elements, sorting raises a TypeError. For example, integers and strings generally cannot be ordered directly. We can solve this by providing a suitable key function if a meaningful ordering exists.",
+      "keyConcepts": "",
+      "code": "# Invalid:# sorted([10, \"Python\", 20])",
+      "output": ""
+    },
+    {
+      "id": 174,
+      "title": "What is the difference between sorting and searching?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "Sorting arranges elements into a particular order, whereas searching finds a particular element. Sorting may require O(n log n) time, while searching an already sorted list can use binary search in O(log n) time.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 175,
+      "title": "When should we avoid sorting an entire collection?",
+      "topicId": 9,
+      "topicName": "Sorting",
+      "answer": "If we only need a few smallest or largest elements from a very large dataset, sorting everything can be unnecessary. We can use heapq.nsmallest(), heapq.nlargest() or a heap-based approach, depending on the requirements.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 176,
+      "title": "What is copying in Python?",
+      "topicId": 10,
+      "topicName": "Copying",
+      "answer": "Copying means creating another object based on an existing object's contents. Depending on the operation, the new object may share references to nested objects or recursively copy them.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 177,
+      "title": "What is the difference between assignment and copying?",
+      "topicId": 10,
+      "topicName": "Copying",
+      "answer": "Assignment creates another reference to the same object, whereas copying creates a separate object. The exact behaviour of nested objects depends on whether we perform a shallow copy or deep copy.",
+      "keyConcepts": "",
+      "code": "a = [1, 2, 3]\nb = ac = a.copy()\nprint(a is b)\n\n# True\n\nprint(a is c)\n\n# False",
+      "output": ""
+    },
+    {
+      "id": 178,
+      "title": "What is shallow copy?",
+      "topicId": 10,
+      "topicName": "Copying",
+      "answer": "A shallow copy creates a new outer object but does not recursively copy nested objects. Therefore, the outer collections are independent, but their nested mutable objects can still be shared.",
+      "keyConcepts": "",
+      "code": "import copya\n= [[1, 2], [3, 4]]\nb = cop\ny.copy(a)\nprint(a is b)\n\n# False\n\nprint(a[0] is b[0])\n\n# True",
+      "output": ""
+    },
+    {
+      "id": 179,
+      "title": "What is deep copy?",
+      "topicId": 10,
+      "topicName": "Copying",
+      "answer": "A deep copy recursively copies nested objects to create an independent object structure. This means changes to nested mutable objects in the copied structure generally do not affect the original.",
+      "keyConcepts": "",
+      "code": "import copya\n= [[1, 2], [3, 4]]\nb = cop\ny.deepcopy(a)b[0].append(100)\nprint(a)\n\nprint(b)",
+      "output": ""
+    },
+    {
+      "id": 180,
+      "title": "What is the difference between shallow copy and deep copy?",
+      "topicId": 10,
+      "topicName": "Copying",
+      "answer": "\"Shallow copy creates a new outer object but shares references to nested objects. Deep copy recursively copies nested objects so that mutable nested structures are generally independent.\"\n\n| Feature                   | Shallow copy   | Deep copy              |\n| ------------------------- | -------------- | ---------------------- |\n| New outer object          | Yes            | Yes                    |\n| Nested objects copied     | No             | Recursively            |\n| Nested mutable references | Shared         | Generally independent  |\n| Performance               | Usually faster | Usually more expensive |\n| Module                    | `copy.copy()`  | `copy.deepcopy()`      |",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 181,
+      "title": "What is the copy module?",
+      "topicId": 10,
+      "topicName": "Copying",
+      "answer": "The copy module is a Python standard library module that provides functions for copying objects. Its two main functions are copy() for shallow copying and deepcopy() for deep copying.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 182,
+      "title": "What is the difference between list.copy() and copy.copy()?",
+      "topicId": 10,
+      "topicName": "Copying",
+      "answer": "Both perform shallow copying for ordinary lists. list.copy() is specifically a list method, while copy.copy() is a general-purpose function that works with many Python objects.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 183,
+      "title": "Does slicing create a shallow copy?",
+      "topicId": 10,
+      "topicName": "Copying",
+      "answer": "Yes. For lists, slicing creates a new outer list containing references to the original elements. Nested mutable objects are still shared.",
+      "keyConcepts": "",
+      "code": "a = [[1], [2]]\nb = a[:]\nprint(a is b)\n\n# False\n\nprint(a[0] is b[0])\n\n# True",
+      "output": ""
+    },
+    {
+      "id": 184,
+      "title": "Why does modifying a nested list sometimes affect another variable?",
+      "topicId": 10,
+      "topicName": "Copying",
+      "answer": "This happens when both variables reference the same nested list. A shallow copy duplicates only the outer list, so changes to shared inner lists are visible through both variables.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 185,
+      "title": "Does deep copy always create completely independent objects?",
+      "topicId": 10,
+      "topicName": "Copying",
+      "answer": "Not necessarily. Deepcopy attempts to recursively copy objects, but some objects are intentionally shared, such as certain immutable or runtime-specific objects. It also uses memoization to handle shared references and circular references.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 186,
+      "title": "What is memoization in deepcopy?",
+      "topicId": 10,
+      "topicName": "Copying",
+      "answer": "Deepcopy uses a memo dictionary to remember objects that have already been copied. This prevents repeatedly copying the same object and helps handle circular references safely.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 187,
+      "title": "Can deep copy handle circular references?",
+      "topicId": 10,
+      "topicName": "Copying",
+      "answer": "Yes. Python's deepcopy uses an internal memoization mechanism to handle circular references and avoid infinite recursive copying.",
+      "keyConcepts": "",
+      "code": "import copya\n= []\na.append(a)\nb = cop\ny.deepcopy(a)\nprint(b is b[0])",
+      "output": ""
+    },
+    {
+      "id": 188,
+      "title": "What happens when we copy an immutable object?",
+      "topicId": 10,
+      "topicName": "Copying",
+      "answer": "Copying immutable objects generally does not require creating an independent object because their state cannot be modified. Python may reuse the same object, depending on its type and implementation.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 189,
+      "title": "How would you choose between shallow copy and deep copy?",
+      "topicId": 10,
+      "topicName": "Copying",
+      "answer": "I would use shallow copy when I only need a new outer collection and sharing nested objects is acceptable. I would use deep copy when I need independent nested mutable structures. I would also consider the performance and memory cost before choosing deep copy.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 190,
+      "title": "What is object aliasing?",
+      "topicId": 10,
+      "topicName": "Copying",
+      "answer": "Aliasing occurs when multiple references point to the same object. If the object is mutable, a modification through one reference is visible through the others. Understanding aliasing is essential when working with lists, dictionaries and nested data structures.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 191,
+      "title": "Why can't a list be used as a dictionary key, but a tuple can?",
+      "topicId": 11,
+      "topicName": "Advanced Integrated",
+      "answer": "Dictionary keys must be hashable. Lists are mutable, so their contents can change, making them unsuitable as hash keys. Tuples are immutable at the outer level, so a tuple containing only hashable elements can be used as a dictionary key.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 192,
+      "title": "Why are dictionary lookups generally O(1)?",
+      "topicId": 11,
+      "topicName": "Advanced Integrated",
+      "answer": "Python dictionaries use hash tables. When we access a key, Python calculates its hash and uses it to locate the corresponding entry. This avoids searching every element sequentially. However, collisions can occur, so O(1) is the average-case complexity rather than a guaranteed worst-case complexity.",
+      "keyConcepts": "Hash function, hash table, collision, equality, average O(1).",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 193,
+      "title": "What happens internally when two different keys have the same hash value?",
+      "topicId": 11,
+      "topicName": "Advanced Integrated",
+      "answer": "This is called a hash collision. Python handles it by examining candidate entries and comparing keys using equality. If the keys are different, the dictionary searches for another suitable position. Both keys can exist in the same dictionary if they are not equal.",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 194,
+      "title": "How would you remove duplicates from a list while preserving order?",
+      "topicId": 11,
+      "topicName": "Advanced Integrated",
+      "answer": "I would use dict.fromkeys() because dictionaries preserve insertion order. It removes duplicate keys while maintaining the first occurrence of each element.",
+      "keyConcepts": "",
+      "code": "numbers = [1, 2, 3, 2, 4, 1]\nresult = list(dict.fromkeys(numbers))\nprint(result)",
+      "output": "[1, 2, 3, 4]"
+    },
+    {
+      "id": 195,
+      "title": "How would you find the most frequent element in a list?",
+      "topicId": 11,
+      "topicName": "Advanced Integrated",
+      "answer": "I would use Counter from the collections module because it is specifically designed for frequency counting. Its most_common() method makes it easy to retrieve the most frequent element.",
+      "keyConcepts": "",
+      "code": "from collections import Counternumbers\n\n= [1, 2, 2, 3, 3, 3, 4]\nresult = Counter(numbers).most_common(1)\nprint(result)",
+      "output": "[(3, 3)]"
+    },
+    {
+      "id": 196,
+      "title": "How would you implement a queue using Python collections?",
+      "topicId": 11,
+      "topicName": "Advanced Integrated",
+      "answer": "I would use collections.deque because it provides efficient insertion and removal from both ends. I would insert elements using append() and remove them using popleft().",
+      "keyConcepts": "",
+      "code": "from collections import dequequeue\n\n= deque()\nqueue.append(10)\nqueue.append(20)\nqueue.append(30)\nprint(queue.popleft()\n\n)",
+      "output": ""
+    },
+    {
+      "id": 197,
+      "title": "What is the difference between a shallow copy and a deep copy when working with nested dictionaries?",
+      "topicId": 11,
+      "topicName": "Advanced Integrated",
+      "answer": "A shallow copy creates a new outer dictionary but shares references to nested dictionaries. Therefore, modifying a nested dictionary through the copied object can affect the original. Deep copy recursively copies nested structures to avoid this shared mutable state.",
+      "keyConcepts": "",
+      "code": "import copyoriginal\n= {    \"user\": {        \"name\": \"Raj\"    }}shallow = cop\ny.copy(original)\ndeep = cop\ny.deepcopy(original)shallow[\"user\"][\"name\"] = \"Aman\"\n\nprint(original[\"user\"][\"name\"])\n\n# Aman\n\nprint(deep[\"user\"][\"name\"])\n\n# Raj",
+      "output": ""
+    },
+    {
+      "id": 198,
+      "title": "How would you choose between a list, set and dictionary for a problem?",
+      "topicId": 11,
+      "topicName": "Advanced Integrated",
+      "answer": "\"I would select the data structure according to the operations required. I would use a list when order, duplicates and positional access matter. I would use a set when uniqueness and membership checking are important. I would use a dictionary when I need key-value relationships and fast key-based lookups.\"\n\n| Requirement        | Best choice |\n| ------------------ | ----------- |\n| Maintain sequence  | List        |\n| Allow duplicates   | List        |\n| Remove duplicates  | Set         |\n| Fast membership    | Set         |\n| Key-value mapping  | Dictionary  |\n| Fixed record       | Tuple       |\n| FIFO queue         | Deque       |\n| Frequency counting | Counter     |\n| Grouping values    | defaultdict |",
+      "keyConcepts": "",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 199,
+      "title": "What is the difference between a list, set and dictionary in terms of internal implementation?",
+      "topicId": 11,
+      "topicName": "Advanced Integrated",
+      "answer": "In CPython, lists are implemented as dynamic arrays of object references. Dictionaries and sets use hash-table-based implementations. Lists provide efficient indexing, while sets and dictionaries provide efficient average-case membership and lookup operations.",
+      "keyConcepts": "- List: Dynamic array. - Set: Hash table. - Dictionary: Hash-table-based mapping.",
+      "code": "",
+      "output": ""
+    },
+    {
+      "id": 200,
+      "title": "If you have to process one million records, how would you choose an efficient Python data structure?",
+      "topicId": 11,
+      "topicName": "Advanced Integrated",
+      "answer": "I would first understand the operations required rather than selecting a data structure based only on the number of records. If I need sequential processing, I would consider an iterator or generator. If I need frequent membership checks, I would use a set. For key-based lookups, I would use a dictionary. For queue operations, I would use deque. I would also consider memory usage, time complexity and whether processing can be done in batches.",
+      "keyConcepts": "Scalability, time complexity, space complexity, lazy evaluation, data structure selection.",
+      "code": "",
+      "output": ""
+    }
+  ]
+};
