@@ -184,14 +184,16 @@ function parseAnswerWithTable(answerText) {
 function AnswerSection({
   phaseId,
   question,
+  currentAnswer: passedCurrent,
+  originalAnswer: passedOriginal,
   customAnswer,
   isDifferenceQuestion,
   onSave,
   onReset,
 }) {
-  const originalAnswer = question.answer;
-  const currentAnswer = customAnswer !== undefined ? customAnswer : originalAnswer;
-  const isCustomized = customAnswer !== undefined && customAnswer !== originalAnswer;
+  const originalAnswer = passedOriginal || question.answer;
+  const currentAnswer = passedCurrent !== undefined ? passedCurrent : (customAnswer !== undefined ? customAnswer : originalAnswer);
+  const isCustomized = currentAnswer !== originalAnswer;
 
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(currentAnswer);
@@ -283,7 +285,7 @@ function AnswerSection({
                 <button
                   type="button"
                   onClick={handleReset}
-                  title="Revert back to original answer"
+                  title="Revert back to original answer across the site"
                   className="text-[11px] font-medium text-stone-600 hover:text-stone-900 bg-white/80 hover:bg-white px-2.5 py-1 rounded-lg border border-stone-200 transition-colors cursor-pointer flex items-center gap-1 shadow-2xs"
                 >
                   <svg className="w-3 h-3 text-stone-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -305,7 +307,7 @@ function AnswerSection({
             </>
           ) : (
             <span className="text-[11px] text-stone-500 italic">
-              Markdown tables &amp; `code` supported
+              Markdown tables &amp; `code` supported &bull; syncs to whole site
             </span>
           )}
         </div>
@@ -750,7 +752,11 @@ export default function App() {
   // Set of opened question IDs for dropdown accordion
   const [openQuestionIds, setOpenQuestionIds] = useState(new Set([1]));
 
-  // Custom manipulated answers: { [`${phaseId}_${questionId}`]: string }
+  // Server-synced questions by phase: { [phaseId]: Array<Question> } (Shared live across all devices)
+  const [serverQuestionsByPhase, setServerQuestionsByPhase] = useState({});
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  // Custom manipulated answers backup in localStorage: { [`${phaseId}_${questionId}`]: string }
   const [customAnswers, setCustomAnswers] = useState(() => {
     try {
       const saved = localStorage.getItem('mockprep_custom_answers');
@@ -780,8 +786,51 @@ export default function App() {
     setTimeout(() => setToastMessage(''), 3500);
   };
 
+  // Fetch live questions for a phase from MongoDB backend so all devices stay in sync
+  const fetchPhaseQuestions = async (phaseId) => {
+    try {
+      setIsSyncing(true);
+      const res = await fetch(`${API_BASE}/api/questions?phase=${phaseId}`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.questions && Array.isArray(data.questions)) {
+          setServerQuestionsByPhase((prev) => ({
+            ...prev,
+            [phaseId]: data.questions,
+          }));
+        }
+      }
+    } catch (err) {
+      console.info('Server backend offline, using bundled data.', err);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  // Fetch phase questions whenever selectedPhaseId changes
+  useEffect(() => {
+    fetchPhaseQuestions(selectedPhaseId);
+  }, [selectedPhaseId]);
+
+  // Auto-sync when window is refocused (e.g., when a friend edits on another laptop)
+  useEffect(() => {
+    const handleFocus = () => {
+      fetchPhaseQuestions(selectedPhaseId);
+    };
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [selectedPhaseId]);
+
   const handleSaveAnswer = async (phaseId, questionId, newAnswer) => {
-    // 1. Update React state & localStorage immediately
+    // 1. Immediately update in-memory state so user sees change with zero lag
+    setServerQuestionsByPhase((prev) => {
+      const existingList = prev[phaseId] || (allPhases.find((p) => p.id === phaseId)?.data?.questions || []);
+      return {
+        ...prev,
+        [phaseId]: existingList.map((q) => (q.id === questionId ? { ...q, answer: newAnswer } : q)),
+      };
+    });
+
     setCustomAnswers((prev) => {
       const next = { ...prev, [`${phaseId}_${questionId}`]: newAnswer };
       try {
@@ -792,19 +841,33 @@ export default function App() {
       return next;
     });
 
-    // 2. Persist to server backend disk if running
+    // 2. Persist to shared MongoDB database so whole site updates for all devices
     try {
-      await fetch(`${API_BASE}/api/questions/${phaseId}/${questionId}`, {
+      const res = await fetch(`${API_BASE}/api/questions/${phaseId}/${questionId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ answer: newAnswer }),
       });
+      if (res.ok) {
+        showToast('Answer updated across the whole site!');
+      } else {
+        showToast('Saved locally; server sync failed.');
+      }
     } catch (err) {
-      console.info('Server backend offline, answer saved safely in browser storage.', err);
+      console.info('Server backend offline, answer saved locally.', err);
+      showToast('Saved locally (offline mode).');
     }
   };
 
   const handleResetAnswer = async (phaseId, questionId, originalAnswer) => {
+    setServerQuestionsByPhase((prev) => {
+      const existingList = prev[phaseId] || (allPhases.find((p) => p.id === phaseId)?.data?.questions || []);
+      return {
+        ...prev,
+        [phaseId]: existingList.map((q) => (q.id === questionId ? { ...q, answer: originalAnswer } : q)),
+      };
+    });
+
     setCustomAnswers((prev) => {
       const next = { ...prev };
       delete next[`${phaseId}_${questionId}`];
@@ -817,11 +880,14 @@ export default function App() {
     });
 
     try {
-      await fetch(`${API_BASE}/api/questions/${phaseId}/${questionId}`, {
+      const res = await fetch(`${API_BASE}/api/questions/${phaseId}/${questionId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ answer: originalAnswer }),
       });
+      if (res.ok) {
+        showToast('Answer reset to original across the site!');
+      }
     } catch (err) {
       console.info('Server backend offline, answer reset locally.', err);
     }
@@ -832,14 +898,27 @@ export default function App() {
     return allPhases.find((p) => p.id === selectedPhaseId) || allPhases[0];
   }, [selectedPhaseId]);
 
-  // Combined questions for current phase (bundled/disk + locally added)
+  // Lookup of factory/bundled original answers for this phase
+  const bundledOriginalAnswerMap = useMemo(() => {
+    const bundled = currentPhase.data ? currentPhase.data.questions : [];
+    return new Map(bundled.map((q) => [q.id, q.answer]));
+  }, [currentPhase]);
+
+  // Combined questions for current phase:
+  // 1. Live database questions (synced across all devices)
+  // 2. Bundled fallback questions (if offline)
+  // 3. Locally added questions
   const allPhaseQuestions = useMemo(() => {
-    const base = currentPhase.data ? currentPhase.data.questions : [];
+    const serverList = serverQuestionsByPhase[selectedPhaseId];
+    const base = (serverList && serverList.length > 0)
+      ? serverList
+      : (currentPhase.data ? currentPhase.data.questions : []);
+
     const added = addedQuestionsByPhase[selectedPhaseId] || [];
     const baseIds = new Set(base.map((q) => q.id));
     const uniqueAdded = added.filter((q) => !baseIds.has(q.id));
     return [...base, ...uniqueAdded];
-  }, [currentPhase, addedQuestionsByPhase, selectedPhaseId]);
+  }, [currentPhase, serverQuestionsByPhase, addedQuestionsByPhase, selectedPhaseId]);
 
   // Topics with dynamic question counts reflecting added questions
   const topics = useMemo(() => {
@@ -908,13 +987,25 @@ export default function App() {
     setSelectedTopicId(topicId);
     setOpenQuestionIds((prev) => new Set(prev).add(nextId));
 
-    // 3. Post to backend disk storage if reachable
+    // 3. Post to backend & MongoDB so it's saved across the whole site
     try {
-      await fetch(`${API_BASE}/api/questions`, {
+      const res = await fetch(`${API_BASE}/api/questions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phaseId, topicId, title, level, answer, keyConcepts, code, output }),
       });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.question) {
+          setServerQuestionsByPhase((prev) => {
+            const list = prev[phaseId] || (allPhases.find((p) => p.id === phaseId)?.data?.questions || []);
+            if (!list.some((item) => item.id === data.question.id)) {
+              return { ...prev, [phaseId]: [...list, data.question] };
+            }
+            return prev;
+          });
+        }
+      }
     } catch (err) {
       console.info('Server backend offline, question saved safely in browser storage.', err);
     }
@@ -1231,15 +1322,28 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Search */}
-              <div className="w-full sm:w-64">
-                <input
-                  type="text"
-                  placeholder="Search questions or keywords..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full px-3.5 py-1.5 text-xs sm:text-sm rounded-xl border border-amber-200 bg-amber-50/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/40 text-stone-800 placeholder-stone-400"
-                />
+              {/* Search & Cloud Sync */}
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <div className="w-full sm:w-64">
+                  <input
+                    type="text"
+                    placeholder="Search questions or keywords..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-3.5 py-1.5 text-xs sm:text-sm rounded-xl border border-amber-200 bg-amber-50/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/40 text-stone-800 placeholder-stone-400"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => fetchPhaseQuestions(selectedPhaseId)}
+                  disabled={isSyncing}
+                  title="Sync with cloud database (pulls edits from other devices)"
+                  className="p-2 rounded-xl border border-amber-200 bg-white hover:bg-amber-50 text-stone-600 hover:text-stone-900 transition-all cursor-pointer shrink-0 shadow-2xs flex items-center justify-center"
+                >
+                  <svg className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-amber-600' : 'text-stone-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </button>
               </div>
             </div>
           </header>
@@ -1387,8 +1491,10 @@ export default function App() {
                 <div className="space-y-3">
                   {filteredQuestions.map((q) => {
                     const isOpen = openQuestionIds.has(q.id);
+                    const bundledAns = bundledOriginalAnswerMap.get(q.id) ?? q.answer;
                     const customAns = customAnswers[`${selectedPhaseId}_${q.id}`];
-                    const isCustomized = customAns !== undefined && customAns !== q.answer;
+                    const currentAns = customAns !== undefined ? customAns : q.answer;
+                    const isCustomized = currentAns !== bundledAns;
                     return (
                       <div
                         key={q.id}
@@ -1453,7 +1559,9 @@ export default function App() {
                             <AnswerSection
                               phaseId={selectedPhaseId}
                               question={q}
-                              customAnswer={customAns}
+                              currentAnswer={currentAns}
+                              originalAnswer={bundledAns}
+                              customAnswer={isCustomized ? currentAns : undefined}
                               isDifferenceQuestion={q.title.toLowerCase().includes('difference')}
                               onSave={handleSaveAnswer}
                               onReset={handleResetAnswer}

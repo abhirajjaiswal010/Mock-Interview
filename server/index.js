@@ -130,14 +130,12 @@ router.put("/questions/:phaseId/:questionId", async (req, res) => {
 
   try {
     await connectDB();
-    const phaseDoc = await Phase.findOne({ phaseId });
-    if (phaseDoc) {
-      const q = phaseDoc.questions.find((item) => item.id === questionId);
-      if (q) {
-        q.answer = answer;
-        await phaseDoc.save();
-        updatedQuestion = q;
-      }
+    const result = await Phase.updateOne(
+      { phaseId, "questions.id": questionId },
+      { $set: { "questions.$.answer": answer } }
+    );
+    if (result.matchedCount > 0) {
+      updatedQuestion = { id: questionId, answer };
     }
   } catch (err) {
     console.warn("MongoDB update error:", err.message);
@@ -153,7 +151,7 @@ router.put("/questions/:phaseId/:questionId", async (req, res) => {
     }
   }
 
-  // Sync to local files if writable local environment
+  // Sync to local data files if writable local environment
   if (!process.env.VERCEL) {
     try {
       const serverJsonPath = getDataPath(`phase${phaseId}Data.json`);
@@ -260,7 +258,7 @@ router.post("/questions", async (req, res) => {
     }
   }
 
-  // Local disk sync
+  // Local data sync
   if (!process.env.VERCEL) {
     try {
       const serverJsonPath = getDataPath(`phase${pId}Data.json`);
