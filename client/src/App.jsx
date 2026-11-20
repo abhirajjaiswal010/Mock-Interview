@@ -1,5 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { allPhases } from './data/interviewData.js';
+import { allHrPhases } from './data/hrInterviewData.js';
+import { ArrowRight, Users, X, ChevronDown, ChevronUp, Sparkles, Search } from 'lucide-react';
 
 // Dedicated CodeBlock with line numbers, copy button, and output display
 function CodeBlock({ code, output }) {
@@ -198,6 +200,7 @@ function AnswerSection({
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(currentAnswer);
   const [saveStatus, setSaveStatus] = useState(null); // null | 'saving' | 'saved'
+  const isHr = Number(phaseId) >= 100;
 
   // Sync editText if currentAnswer changes from outside and not currently editing
   useEffect(() => {
@@ -248,30 +251,34 @@ function AnswerSection({
     <div
       className={`rounded-2xl border transition-all p-4 sm:p-5 shadow-2xs ${
         isEditing
-          ? 'bg-amber-50/50 border-amber-300 ring-2 ring-amber-400/30'
+          ? isHr ? 'bg-purple-50/50 border-purple-300 ring-2 ring-purple-400/30' : 'bg-amber-50/50 border-amber-300 ring-2 ring-amber-400/30'
           : isCustomized
-          ? 'bg-emerald-50/90 border-emerald-300'
-          : 'bg-emerald-50/70 border-emerald-200/90'
+          ? isHr ? 'bg-purple-50/90 border-purple-300' : 'bg-emerald-50/90 border-emerald-300'
+          : isHr ? 'bg-purple-50/70 border-purple-200/90' : 'bg-emerald-50/70 border-emerald-200/90'
       }`}
     >
       {/* Top Header Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-3 pb-2.5 border-b border-emerald-200/60">
+      <div className={`flex flex-wrap items-center justify-between gap-2 mb-3 pb-2.5 border-b ${isHr ? 'border-purple-200/60' : 'border-emerald-200/60'}`}>
         <div className="flex items-center gap-2">
           <span
             className={`w-2 h-2 rounded-full ${
-              isEditing ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'
+              isEditing ? (isHr ? 'bg-purple-500 animate-pulse' : 'bg-amber-500 animate-pulse') : (isHr ? 'bg-purple-500' : 'bg-emerald-500')
             }`}
           ></span>
-          <span className="text-xs font-bold uppercase tracking-wider text-emerald-900">
+          <span className={`text-xs font-bold uppercase tracking-wider ${isHr ? 'text-purple-900' : 'text-emerald-900'}`}>
             {isEditing ? 'Edit Spoken Answer' : 'How to Speak in the Interview:'}
           </span>
           {isCustomized && !isEditing && (
-            <span className="text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300/80 px-2 py-0.5 rounded-full flex items-center gap-1 shadow-2xs">
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow-2xs ${
+              isHr ? 'bg-purple-100 text-purple-900 border border-purple-300/80' : 'bg-amber-100 text-amber-900 border border-amber-300/80'
+            }`}>
               <span>✏️</span> Customized
             </span>
           )}
           {parsed.table && !isEditing && (
-            <span className="text-[10px] font-bold tracking-normal bg-emerald-100 text-emerald-800 border border-emerald-300/80 px-2 py-0.5 rounded-full flex items-center gap-1">
+            <span className={`text-[10px] font-bold tracking-normal px-2 py-0.5 rounded-full flex items-center gap-1 ${
+              isHr ? 'bg-purple-100 text-purple-800 border border-purple-300/80' : 'bg-emerald-100 text-emerald-800 border border-emerald-300/80'
+            }`}>
               <span>⇄</span> Comparison Table
             </span>
           )}
@@ -297,9 +304,13 @@ function AnswerSection({
               <button
                 type="button"
                 onClick={handleStartEdit}
-                className="text-xs font-semibold text-emerald-900 hover:text-emerald-950 bg-emerald-100/90 hover:bg-emerald-200/90 px-3 py-1 rounded-lg border border-emerald-300 transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs hover:scale-[1.02] active:scale-[0.98]"
+                className={`text-xs font-semibold px-3 py-1 rounded-lg border transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs hover:scale-[1.02] active:scale-[0.98] ${
+                  isHr
+                    ? 'text-purple-900 hover:text-purple-950 bg-purple-100/90 hover:bg-purple-200/90 border-purple-300'
+                    : 'text-emerald-900 hover:text-emerald-950 bg-emerald-100/90 hover:bg-emerald-200/90 border-emerald-300'
+                }`}
               >
-                <svg className="w-3.5 h-3.5 text-emerald-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className={`w-3.5 h-3.5 ${isHr ? 'text-purple-800' : 'text-emerald-800'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                 </svg>
                 <span>Edit Answer</span>
@@ -321,7 +332,11 @@ function AnswerSection({
             onChange={(e) => setEditText(e.target.value)}
             rows={8}
             placeholder="Type your manipulated or customized answer here... You can use `backticks` for code or Markdown table syntax (| Col 1 | Col 2 |)."
-            className="w-full p-3.5 text-xs sm:text-sm font-sans leading-relaxed text-stone-900 bg-white rounded-xl border border-amber-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 shadow-inner resize-y transition-all"
+            className={`w-full p-3.5 text-xs sm:text-sm font-sans leading-relaxed text-stone-900 bg-white rounded-xl border shadow-inner resize-y transition-all ${
+              isHr
+                ? 'border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500'
+                : 'border-amber-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'
+            }`}
             autoFocus
           />
 
@@ -331,7 +346,9 @@ function AnswerSection({
                 type="button"
                 onClick={handleSave}
                 disabled={saveStatus === 'saving'}
-                className="text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] px-4 py-2 rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1.5 disabled:opacity-60"
+                className={`text-xs font-bold text-white active:scale-[0.98] px-4 py-2 rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1.5 disabled:opacity-60 ${
+                  isHr ? 'bg-purple-600 hover:bg-purple-700' : 'bg-emerald-600 hover:bg-emerald-700'
+                }`}
               >
                 {saveStatus === 'saving' ? (
                   <span>Saving...</span>
@@ -392,37 +409,47 @@ function AnswerSection({
           {/* Structured Comparison Table */}
           {parsed.table && (
             <div className="mt-3.5 space-y-2">
-              <div className="text-xs font-bold text-emerald-900 flex items-center gap-1.5 mb-1">
-                <span className="w-5 h-5 rounded-md bg-emerald-100/90 text-emerald-800 flex items-center justify-center text-[11px] font-bold">
+              <div className={`text-xs font-bold flex items-center gap-1.5 mb-1 ${isHr ? 'text-purple-900' : 'text-emerald-900'}`}>
+                <span className={`w-5 h-5 rounded-md flex items-center justify-center text-[11px] font-bold ${
+                  isHr ? 'bg-purple-100/90 text-purple-800' : 'bg-emerald-100/90 text-emerald-800'
+                }`}>
                   ⇄
                 </span>
                 <span>Comparison Table:</span>
               </div>
-              <div className="overflow-x-auto rounded-xl border border-emerald-200/90 bg-white shadow-xs">
+              <div className={`overflow-x-auto rounded-xl border bg-white shadow-xs ${
+                isHr ? 'border-purple-200/90' : 'border-emerald-200/90'
+              }`}>
                 <table className="w-full text-left border-collapse text-xs sm:text-sm">
                   <thead>
-                    <tr className="bg-emerald-100/90 border-b border-emerald-200 text-emerald-950">
+                    <tr className={isHr ? 'bg-purple-100/90 border-b border-purple-200 text-purple-950' : 'bg-emerald-100/90 border-b border-emerald-200 text-emerald-950'}>
                       {parsed.table.headers.map((header, idx) => (
                         <th
                           key={idx}
-                          className="py-2.5 px-3.5 font-bold tracking-tight border-r border-emerald-200/60 last:border-r-0 whitespace-nowrap"
+                          className={`py-2.5 px-3.5 font-bold tracking-tight border-r last:border-r-0 whitespace-nowrap ${
+                            isHr ? 'border-purple-200/60' : 'border-emerald-200/60'
+                          }`}
                         >
                           {renderFormattedInline(header)}
                         </th>
                       ))}
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-emerald-100/70">
+                  <tbody className={isHr ? 'divide-y divide-purple-100/70' : 'divide-y divide-emerald-100/70'}>
                     {parsed.table.rows.map((row, rIdx) => (
                       <tr
                         key={rIdx}
-                        className="hover:bg-emerald-50/60 transition-colors even:bg-emerald-50/20"
+                        className={`transition-colors ${
+                          isHr ? 'hover:bg-purple-50/60 even:bg-purple-50/20' : 'hover:bg-emerald-50/60 even:bg-emerald-50/20'
+                        }`}
                       >
                         {row.map((cell, cIdx) => (
                           <td
                             key={cIdx}
-                            className={`py-2.5 px-3.5 leading-relaxed text-stone-800 border-r border-emerald-100/60 last:border-r-0 ${
-                              cIdx === 0 ? 'font-semibold text-emerald-950' : ''
+                            className={`py-2.5 px-3.5 leading-relaxed text-stone-800 border-r last:border-r-0 ${
+                              isHr ? 'border-purple-100/60' : 'border-emerald-100/60'
+                            } ${
+                              cIdx === 0 ? (isHr ? 'font-semibold text-purple-950' : 'font-semibold text-emerald-950') : ''
                             }`}
                           >
                             {renderFormattedInline(cell)}
@@ -438,7 +465,9 @@ function AnswerSection({
 
           {/* Post-table Notes / Details */}
           {parsed.postText && (
-            <div className="mt-3.5 bg-emerald-50/90 border-l-4 border-emerald-500 px-3.5 py-2.5 rounded-r-xl text-xs sm:text-sm text-stone-900 leading-relaxed space-y-2">
+            <div className={`mt-3.5 border-l-4 px-3.5 py-2.5 rounded-r-xl text-xs sm:text-sm text-stone-900 leading-relaxed space-y-2 ${
+              isHr ? 'bg-purple-50/90 border-purple-500' : 'bg-emerald-50/90 border-emerald-500'
+            }`}>
               {parsed.postText.split('\n\n').map((paragraph, pIdx) => (
                 <p key={pIdx} className="whitespace-pre-line leading-relaxed">
                   {renderFormattedInline(paragraph)}
@@ -544,9 +573,13 @@ function AddQuestionModal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-stone-100 bg-amber-50/60">
+        <div className={`flex items-center justify-between px-6 py-4 border-b border-stone-100 ${
+          Number(phaseId) >= 100 ? 'bg-purple-50/70' : 'bg-amber-50/60'
+        }`}>
           <div className="flex items-center gap-2.5">
-            <span className="w-8 h-8 rounded-xl bg-amber-600 text-white flex items-center justify-center font-bold text-lg shadow-xs">
+            <span className={`w-8 h-8 rounded-xl text-white flex items-center justify-center font-bold text-lg shadow-xs ${
+              Number(phaseId) >= 100 ? 'bg-purple-600' : 'bg-amber-600'
+            }`}>
               +
             </span>
             <div>
@@ -579,16 +612,20 @@ function AddQuestionModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1.5">
-                Target Phase
+                {Number(phaseId) >= 100 ? 'Target HR Category' : 'Target Phase'}
               </label>
               <select
                 value={phaseId}
                 onChange={(e) => handlePhaseChange(e.target.value)}
-                className="w-full text-xs sm:text-sm font-medium bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 cursor-pointer"
+                className={`w-full text-xs sm:text-sm font-medium bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-stone-800 focus:outline-none focus:ring-2 ${
+                  Number(phaseId) >= 100
+                    ? 'focus:ring-purple-500/30 focus:border-purple-500'
+                    : 'focus:ring-amber-500/30 focus:border-amber-500'
+                } cursor-pointer`}
               >
                 {phases.map((p) => (
                   <option key={p.id} value={p.id}>
-                    Phase {p.id}: {p.title.includes(': ') ? p.title.split(': ')[1] : p.title}
+                    {p.id >= 100 ? `Category ${p.id - 100}` : `Phase ${p.id}`}: {p.title.includes(': ') ? p.title.split(': ')[1] : p.title}
                   </option>
                 ))}
               </select>
@@ -601,7 +638,11 @@ function AddQuestionModal({
               <select
                 value={topicId}
                 onChange={(e) => setTopicId(Number(e.target.value))}
-                className="w-full text-xs sm:text-sm font-medium bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-stone-800 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 cursor-pointer"
+                className={`w-full text-xs sm:text-sm font-medium bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-stone-800 focus:outline-none focus:ring-2 ${
+                  Number(phaseId) >= 100
+                    ? 'focus:ring-purple-500/30 focus:border-purple-500'
+                    : 'focus:ring-amber-500/30 focus:border-amber-500'
+                } cursor-pointer`}
               >
                 {availableTopics.map((t) => (
                   <option key={t.id} value={t.id}>
@@ -627,7 +668,9 @@ function AddQuestionModal({
                     onClick={() => setLevel(lvl)}
                     className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       active
-                        ? 'bg-amber-600 text-white shadow-xs'
+                        ? Number(phaseId) >= 100
+                          ? 'bg-purple-600 text-white shadow-xs'
+                          : 'bg-amber-600 text-white shadow-xs'
                         : 'bg-stone-100 hover:bg-stone-200 text-stone-700 border border-stone-200'
                     }`}
                   >
@@ -648,7 +691,11 @@ function AddQuestionModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. What is memory fragmentation in Python and how does pymalloc minimize it?"
-              className="w-full text-xs sm:text-sm bg-stone-50 border border-stone-300 rounded-xl p-3 text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 font-medium"
+              className={`w-full text-xs sm:text-sm bg-stone-50 border border-stone-300 rounded-xl p-3 text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 ${
+                Number(phaseId) >= 100
+                  ? 'focus:ring-purple-500/30 focus:border-purple-500'
+                  : 'focus:ring-amber-500/30 focus:border-amber-500'
+              } font-medium`}
               required
             />
           </div>
@@ -668,7 +715,11 @@ function AddQuestionModal({
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
               placeholder="Explain clearly with core concepts, bullet points, or comparison tables..."
-              className="w-full text-xs sm:text-sm bg-stone-50 border border-stone-300 rounded-xl p-3 text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 leading-relaxed font-mono"
+              className={`w-full text-xs sm:text-sm bg-stone-50 border border-stone-300 rounded-xl p-3 text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 ${
+                Number(phaseId) >= 100
+                  ? 'focus:ring-purple-500/30 focus:border-purple-500'
+                  : 'focus:ring-amber-500/30 focus:border-amber-500'
+              } leading-relaxed font-mono`}
               required
             />
           </div>
@@ -682,8 +733,12 @@ function AddQuestionModal({
               type="text"
               value={keyConcepts}
               onChange={(e) => setKeyConcepts(e.target.value)}
-              placeholder="e.g. pymalloc, Arenas, Pools, RSS, glibc"
-              className="w-full text-xs sm:text-sm bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500"
+              placeholder="e.g. STAR Framework, Situation, Task, Action, Result"
+              className={`w-full text-xs sm:text-sm bg-stone-50 border border-stone-300 rounded-xl px-3 py-2 text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 ${
+                Number(phaseId) >= 100
+                  ? 'focus:ring-purple-500/30 focus:border-purple-500'
+                  : 'focus:ring-amber-500/30 focus:border-amber-500'
+              }`}
             />
           </div>
 
@@ -728,7 +783,11 @@ function AddQuestionModal({
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 shadow-sm transition-all cursor-pointer disabled:opacity-50"
+              className={`inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold text-white shadow-sm transition-all cursor-pointer disabled:opacity-50 ${
+                Number(phaseId) >= 100
+                  ? 'bg-purple-600 hover:bg-purple-700'
+                  : 'bg-amber-600 hover:bg-amber-700'
+              }`}
             >
               <span>{saving ? 'Saving...' : 'Add Question'}</span>
               <span>→</span>
@@ -740,13 +799,309 @@ function AddQuestionModal({
   );
 }
 
+const defaultHrQuestions = [
+  {
+    id: 'hr-1',
+    category: 'Introduction',
+    question: 'Tell me about yourself and your journey as a developer.',
+    summary: 'Structure with Present -> Past -> Future. Keep it concise (60–90 seconds).',
+    answer: "• Present: Start with your current role and primary technical strengths (e.g., Python backend development, API design, algorithms, or distributed systems).\n• Past: Mention your technical foundation, pivotal projects, and accomplishments that shaped your engineering mindset.\n• Future: Connect your ambitions directly to this role and company, explaining why you are excited to solve technical challenges with their team."
+  },
+  {
+    id: 'hr-2',
+    category: 'Behavioral / STAR',
+    question: 'Tell me about a challenging technical problem or bug you solved.',
+    summary: 'Use the STAR method: Situation -> Task -> Action -> Result.',
+    answer: "• Situation: A production service or query pipeline was experiencing high latency or memory leaks under heavy load.\n• Task: I took ownership of diagnosing the root cause and implementing a robust, permanent fix.\n• Action: Profiled memory and queries, located the bottleneck (e.g., suboptimal indexing, blocking I/O, or thread contention), and refactored the logic.\n• Result: Reduced response latency by 45% and stabilized memory usage under peak traffic."
+  },
+  {
+    id: 'hr-3',
+    category: 'Teamwork & Conflict',
+    question: 'How do you handle technical disagreements or architectural debates within your team?',
+    summary: 'Focus on empathy, objective criteria, benchmarks, and alignment.',
+    answer: "I approach technical disagreements with curiosity rather than ego. I actively listen to understand the tradeoffs they are prioritizing. I propose evaluating options objectively using benchmarks, small Proof-of-Concepts (PoCs), or measurable KPIs (latency, maintainability, scalability). Once a team decision is made, I commit fully."
+  },
+  {
+    id: 'hr-4',
+    category: 'Self-Awareness',
+    question: 'What are your greatest strengths and areas for improvement?',
+    summary: 'Provide genuine technical strengths alongside a real area you are actively improving.',
+    answer: "• Strength: Tenacity in root-cause debugging, clean code practices, and designing reliable, maintainable systems.\n• Area for Improvement: In the past, I sometimes spent excessive time perfecting early prototypes before validating business velocity. I now focus on shipping working MVPs first and iterating rapidly based on telemetry and user feedback."
+  },
+  {
+    id: 'hr-5',
+    category: 'Company Fit',
+    question: 'Why do you want to join our company specifically?',
+    summary: 'Demonstrate research and genuine alignment with their engineering mission.',
+    answer: "Reference specific engineering challenges, open-source work, tech stack choices, or product milestones from the company. Connect how your passion for clean engineering and Python problem-solving aligns directly with what their team is building."
+  },
+  {
+    id: 'hr-6',
+    category: 'Work Under Pressure',
+    question: 'How do you handle tight deadlines or shifting project priorities?',
+    summary: 'Highlight prioritization, proactive communication, and iterative delivery.',
+    answer: "I communicate early and proactively with project stakeholders. I break complex requirements down into core MVP deliverables versus non-critical enhancements, ensuring the highest-impact components are thoroughly tested and shipped reliably without accumulating unexpected technical debt."
+  },
+  {
+    id: 'hr-7',
+    category: 'Reverse Interviewing',
+    question: 'What high-signal questions should you ask the interviewer at the end?',
+    summary: 'Show curiosity and interest in engineering culture and team dynamics.',
+    answer: "High-value questions to ask:\n1. 'What does a successful first 90 days look like for someone stepping into this role?'\n2. 'How does your engineering team balance shipping new features with addressing technical debt and maintenance?'\n3. 'What is the team dynamic and code review culture like day-to-day?'"
+  }
+];
+
+function HrQuestionsModal({ isOpen, onClose }) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [openIds, setOpenIds] = useState(new Set(['hr-1']));
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  const filtered = defaultHrQuestions.filter((q) =>
+    q.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    q.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    q.answer.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const toggle = (id) => {
+    setOpenIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-stone-900/60 backdrop-blur-xs overflow-y-auto"
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-purple-100 overflow-hidden my-6 animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[85vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-purple-100 bg-gradient-to-r from-purple-50/80 via-white to-purple-50/40">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-purple-600/10 border border-purple-200 text-purple-700 flex items-center justify-center shadow-xs shrink-0 p-1.5">
+              <img src="/hr.png" alt="HR Icon" className="w-full h-full object-contain" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-base sm:text-lg font-bold text-stone-900 leading-tight">
+                  HR &amp; Behavioral Questions
+                </h3>
+                <span className="text-[11px] font-bold text-purple-700 bg-purple-100/80 px-2 py-0.5 rounded-full border border-purple-200">
+                  {defaultHrQuestions.length} Questions
+                </span>
+              </div>
+              <p className="text-xs text-stone-500 mt-0.5">
+                Key behavioral, STAR method, and culture fit interview rounds
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-8 h-8 rounded-full text-stone-400 hover:text-stone-700 hover:bg-stone-100 flex items-center justify-center transition-colors cursor-pointer"
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Search */}
+        <div className="px-6 py-3 border-b border-stone-100 bg-stone-50/50">
+          <div className="relative">
+            <Search className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search HR questions (e.g. STAR, conflict, weakness, introduction)..."
+              className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-white border border-stone-200 rounded-xl text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500"
+            />
+          </div>
+        </div>
+
+        {/* Content list */}
+        <div className="p-4 sm:p-6 space-y-3 overflow-y-auto flex-1">
+          {filtered.length === 0 ? (
+            <div className="text-center py-12 text-stone-400 text-xs sm:text-sm">
+              No HR questions match "{searchTerm}".
+            </div>
+          ) : (
+            filtered.map((item) => {
+              const isOpen = openIds.has(item.id);
+              return (
+                <div
+                  key={item.id}
+                  className={`rounded-2xl border transition-all ${
+                    isOpen
+                      ? 'border-purple-200 bg-purple-50/20 shadow-xs'
+                      : 'border-stone-200/80 bg-white hover:border-stone-300'
+                  }`}
+                >
+                  <button
+                    type="button"
+                    onClick={() => toggle(item.id)}
+                    className="w-full text-left p-4 flex items-start justify-between gap-3 cursor-pointer"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-purple-700 bg-purple-100/70 border border-purple-200/70 px-2 py-0.5 rounded-md">
+                          {item.category}
+                        </span>
+                      </div>
+                      <h4 className="text-sm font-bold text-stone-900 leading-snug">
+                        {item.question}
+                      </h4>
+                      {item.summary && !isOpen && (
+                        <p className="text-xs text-stone-500 mt-1 line-clamp-1">
+                          {item.summary}
+                        </p>
+                      )}
+                    </div>
+                    <div className="shrink-0 text-stone-400 mt-1">
+                      {isOpen ? (
+                        <ChevronUp className="w-4 h-4 text-purple-600" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4" />
+                      )}
+                    </div>
+                  </button>
+
+                  {isOpen && (
+                    <div className="px-4 pb-4 pt-1 border-t border-purple-100/60 text-xs sm:text-sm text-stone-700 space-y-2 leading-relaxed">
+                      {item.summary && (
+                        <div className="p-2.5 rounded-xl bg-purple-50/70 border border-purple-100 text-purple-900 text-xs font-medium flex items-start gap-2">
+                          <Sparkles className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
+                          <span>{item.summary}</span>
+                        </div>
+                      )}
+                      <div className="whitespace-pre-line text-stone-700 pt-1 font-sans">
+                        {item.answer}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="px-6 py-3 border-t border-stone-100 bg-stone-50/60 flex items-center justify-between text-xs text-stone-500">
+          <span>Tip: Use real metrics and the STAR method when answering.</span>
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-1.5 rounded-xl bg-stone-200 hover:bg-stone-300 text-stone-800 font-semibold transition-colors cursor-pointer"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
 
+// Helper to parse persisted navigation state from URL hash or localStorage
+function parseNavState() {
+  const defaultNav = {
+    view: 'home',
+    track: 'python',
+    phaseId: 1,
+    topicId: 'all',
+  };
+
+  let fromHash = null;
+  if (typeof window !== 'undefined') {
+    try {
+      const rawHash = (window.location.hash || '').replace(/^#\/?/, '').trim();
+      if (rawHash) {
+        const params = new URLSearchParams(rawHash);
+        const v = params.get('view');
+        const t = params.get('track');
+        const p = params.get('phase');
+        const top = params.get('topic');
+
+        fromHash = {};
+        if (v === 'home' || v === 'phases' || v === 'questions') {
+          fromHash.view = v;
+        }
+        if (t === 'python' || t === 'hr') {
+          fromHash.track = t;
+        }
+        if (p) {
+          const parsedP = parseInt(p, 10);
+          if (!isNaN(parsedP)) fromHash.phaseId = parsedP;
+        }
+        if (top !== null && top !== undefined) {
+          fromHash.topicId = top === 'all' ? 'all' : (!isNaN(Number(top)) ? Number(top) : top);
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to parse URL hash:', e);
+    }
+  }
+
+  let fromStorage = null;
+  if (typeof localStorage !== 'undefined') {
+    try {
+      const saved = localStorage.getItem('mockprep_nav_state');
+      if (saved) {
+        fromStorage = JSON.parse(saved);
+      }
+    } catch (e) {
+      console.warn('Failed to parse localStorage nav state:', e);
+    }
+  }
+
+  const merged = {
+    ...defaultNav,
+    ...(fromStorage && typeof fromStorage === 'object' ? fromStorage : {}),
+    ...(fromHash && typeof fromHash === 'object' ? fromHash : {}),
+  };
+
+  // Keep track and phaseId consistent
+  if (merged.phaseId >= 100) {
+    merged.track = 'hr';
+  } else if (merged.track === 'hr' && merged.phaseId < 100) {
+    merged.phaseId = 101;
+  } else if (merged.track === 'python' && merged.phaseId >= 100) {
+    merged.phaseId = 1;
+  }
+
+  if (merged.topicId !== 'all' && !isNaN(Number(merged.topicId))) {
+    merged.topicId = Number(merged.topicId);
+  }
+
+  return merged;
+}
+
 export default function App() {
+  const initialNav = useMemo(() => parseNavState(), []);
+
   // Navigation views: 'home' | 'phases' | 'questions'
-  const [view, setView] = useState('home');
-  const [selectedPhaseId, setSelectedPhaseId] = useState(1);
-  const [selectedTopicId, setSelectedTopicId] = useState('all');
+  const [view, setView] = useState(initialNav.view);
+  // Track: 'python' | 'hr'
+  const [currentTrack, setCurrentTrack] = useState(initialNav.track);
+  const [selectedPhaseId, setSelectedPhaseId] = useState(initialNav.phaseId);
+  const [selectedTopicId, setSelectedTopicId] = useState(initialNav.topicId);
   const [searchQuery, setSearchQuery] = useState('');
   
   // Set of opened question IDs for dropdown accordion
@@ -755,6 +1110,11 @@ export default function App() {
   // Server-synced questions by phase: { [phaseId]: Array<Question> } (Shared live across all devices)
   const [serverQuestionsByPhase, setServerQuestionsByPhase] = useState({});
   const [isSyncing, setIsSyncing] = useState(false);
+
+  // Available phases across both tracks
+  const allAvailablePhases = useMemo(() => [...allPhases, ...allHrPhases], []);
+  const activePhases = useMemo(() => (currentTrack === 'hr' ? allHrPhases : allPhases), [currentTrack]);
+  const isHrTrack = currentTrack === 'hr';
 
   // Custom manipulated answers backup in localStorage: { [`${phaseId}_${questionId}`]: string }
   const [customAnswers, setCustomAnswers] = useState(() => {
@@ -779,6 +1139,7 @@ export default function App() {
   });
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isHrModalOpen, setIsHrModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
   const showToast = (msg) => {
@@ -788,6 +1149,7 @@ export default function App() {
 
   // Fetch live questions for a phase from MongoDB backend so all devices stay in sync
   const fetchPhaseQuestions = async (phaseId) => {
+    if (phaseId >= 100) return; // HR track runs bundled + local storage
     try {
       setIsSyncing(true);
       const res = await fetch(`${API_BASE}/api/questions?phase=${phaseId}`);
@@ -821,10 +1183,64 @@ export default function App() {
     return () => window.removeEventListener('focus', handleFocus);
   }, [selectedPhaseId]);
 
+  // Synchronize navigation state with localStorage and URL hash
+  useEffect(() => {
+    const navState = {
+      view,
+      track: currentTrack,
+      phaseId: selectedPhaseId,
+      topicId: selectedTopicId,
+    };
+
+    try {
+      localStorage.setItem('mockprep_nav_state', JSON.stringify(navState));
+    } catch (e) {
+      console.warn('Failed to save nav state to localStorage:', e);
+    }
+
+    try {
+      if (view !== 'home') {
+        const params = new URLSearchParams();
+        params.set('view', view);
+        params.set('track', currentTrack);
+        if (view === 'questions') {
+          params.set('phase', String(selectedPhaseId));
+          if (selectedTopicId !== 'all') {
+            params.set('topic', String(selectedTopicId));
+          }
+        }
+        const newHash = `#${params.toString()}`;
+        if (window.location.hash !== newHash) {
+          window.history.replaceState(null, '', newHash);
+        }
+      } else {
+        if (window.location.hash && window.location.hash !== '#') {
+          window.history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+      }
+    } catch (e) {
+      console.warn('Failed to update URL hash:', e);
+    }
+  }, [view, currentTrack, selectedPhaseId, selectedTopicId]);
+
+  // Support browser Back/Forward navigation
+  useEffect(() => {
+    const handleHashChange = () => {
+      const nav = parseNavState();
+      setView(nav.view);
+      setCurrentTrack(nav.track);
+      setSelectedPhaseId(nav.phaseId);
+      setSelectedTopicId(nav.topicId);
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   const handleSaveAnswer = async (phaseId, questionId, newAnswer) => {
     // 1. Immediately update in-memory state so user sees change with zero lag
     setServerQuestionsByPhase((prev) => {
-      const existingList = prev[phaseId] || (allPhases.find((p) => p.id === phaseId)?.data?.questions || []);
+      const existingList = prev[phaseId] || (allAvailablePhases.find((p) => p.id === phaseId)?.data?.questions || []);
       return {
         ...prev,
         [phaseId]: existingList.map((q) => (q.id === questionId ? { ...q, answer: newAnswer } : q)),
@@ -861,7 +1277,7 @@ export default function App() {
 
   const handleResetAnswer = async (phaseId, questionId, originalAnswer) => {
     setServerQuestionsByPhase((prev) => {
-      const existingList = prev[phaseId] || (allPhases.find((p) => p.id === phaseId)?.data?.questions || []);
+      const existingList = prev[phaseId] || (allAvailablePhases.find((p) => p.id === phaseId)?.data?.questions || []);
       return {
         ...prev,
         [phaseId]: existingList.map((q) => (q.id === questionId ? { ...q, answer: originalAnswer } : q)),
@@ -895,8 +1311,8 @@ export default function App() {
 
   // Current active phase
   const currentPhase = useMemo(() => {
-    return allPhases.find((p) => p.id === selectedPhaseId) || allPhases[0];
-  }, [selectedPhaseId]);
+    return allAvailablePhases.find((p) => p.id === selectedPhaseId) || activePhases[0];
+  }, [selectedPhaseId, allAvailablePhases, activePhases]);
 
   // Lookup of factory/bundled original answers for this phase
   const bundledOriginalAnswerMap = useMemo(() => {
@@ -953,7 +1369,7 @@ export default function App() {
   // Handler to add a new question to a topic
   const handleAddQuestion = async (formData) => {
     const { phaseId, topicId, level, title, answer, keyConcepts, code, output } = formData;
-    const targetPhase = allPhases.find((p) => p.id === phaseId);
+    const targetPhase = allAvailablePhases.find((p) => p.id === phaseId);
     const existing = (targetPhase?.data?.questions || []).concat(addedQuestionsByPhase[phaseId] || []);
     const nextId = existing.reduce((max, q) => (q.id > max ? q.id : max), 0) + 1;
     const targetTopic = (targetPhase?.data?.topics || []).find((t) => t.id === topicId);
@@ -998,7 +1414,7 @@ export default function App() {
         const data = await res.json();
         if (data.question) {
           setServerQuestionsByPhase((prev) => {
-            const list = prev[phaseId] || (allPhases.find((p) => p.id === phaseId)?.data?.questions || []);
+            const list = prev[phaseId] || (allAvailablePhases.find((p) => p.id === phaseId)?.data?.questions || []);
             if (!list.some((item) => item.id === data.question.id)) {
               return { ...prev, [phaseId]: [...list, data.question] };
             }
@@ -1045,7 +1461,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#faf7f2] text-stone-800 flex flex-col selection:bg-amber-200">
+    <div className={`min-h-screen ${isHrTrack ? 'bg-[#faf8fd] selection:bg-purple-200' : 'bg-[#faf7f2] selection:bg-amber-200'} text-stone-800 flex flex-col`}>
       
       {/* ============================================================== */}
       {/* 1. STEP 1: HOME SCREEN                                         */}
@@ -1066,27 +1482,118 @@ export default function App() {
             </div>
           </header>
 
-          <main className="flex-1 flex items-center justify-center p-6">
-            <div className="w-full max-w-lg text-center bg-white border border-amber-200/80 rounded-3xl p-10 sm:p-12 shadow-sm">
-              <img src="/interview.png" alt="Python Mock Interview Logo" className="w-20 h-20 mx-auto mb-4 object-contain rounded-2xl drop-shadow-sm border border-amber-100 p-1 bg-amber-50/40" />
-              <div className="inline-block text-xs uppercase font-bold tracking-wider text-amber-800 bg-amber-50 border border-amber-200 px-3.5 py-1 rounded-lg mb-4">
-                Technical Interview Prep
+          <main className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto w-full my-auto">
+            {/* Header intro */}
+            <div className="text-center mb-8 sm:mb-10 max-w-xl mx-auto">
+              <div className="inline-flex items-center gap-1.5 text-xs uppercase font-bold tracking-wider text-amber-800 bg-amber-100/70 border border-amber-200/80 px-3.5 py-1 rounded-full mb-3">
+                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                <span>Interview Preparation Tracks</span>
+              </div>
+              <h1 className="text-3xl sm:text-4xl font-extrabold text-stone-900 tracking-tight">
+                Select Your Interview Track
+              </h1>
+              <p className="text-stone-600 text-xs sm:text-sm mt-2 leading-relaxed">
+                Choose a track to practice with real interview questions, spoken answers, and structured frameworks.
+              </p>
+            </div>
+
+            {/* Two Cards: Python & HR */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 w-full max-w-4xl">
+              {/* Card 1: Python Mock Interview */}
+              <div className="bg-white rounded-3xl border border-amber-200/90 p-6 sm:p-8 flex flex-col justify-between shadow-sm hover:shadow-xl hover:border-amber-300 transition-all duration-300 group">
+                <div>
+                  <div className="flex items-center justify-between gap-3 mb-5">
+                    <div className="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-200 p-2 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200 shadow-xs">
+                      <img src="/python.png" alt="Python Logo" className="w-full h-full object-contain" />
+                    </div>
+                    <span className="text-[11px] font-bold text-amber-800 bg-amber-100/80 border border-amber-200 px-3 py-1 rounded-full">
+                      8 Phases &bull; 1,839 Qs
+                    </span>
+                  </div>
+
+                  <h3 className="text-xl sm:text-2xl font-bold text-stone-900 tracking-tight mb-2">
+                    Python Technical Prep
+                  </h3>
+                  <p className="text-stone-600 text-xs sm:text-sm leading-relaxed mb-5">
+                    Master technical SDE questions across Fundamentals, Collections, OOP, Exceptions, File Handling, Internals &amp; Memory.
+                  </p>
+
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-6">
+                    <span className="text-[11px] font-semibold text-amber-900 bg-amber-50 border border-amber-200/80 px-2.5 py-1 rounded-lg">
+                      ⚡ Fundamentals to Internals
+                    </span>
+                    <span className="text-[11px] font-semibold text-amber-900 bg-amber-50 border border-amber-200/80 px-2.5 py-1 rounded-lg">
+                      💻 Code &amp; Output
+                    </span>
+                    <span className="text-[11px] font-semibold text-amber-900 bg-amber-50 border border-amber-200/80 px-2.5 py-1 rounded-lg">
+                      📊 Comparison Tables
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCurrentTrack('python');
+                    setSelectedPhaseId(1);
+                    setSelectedTopicId('all');
+                    setView('phases');
+                  }}
+                  className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-amber-600 via-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 active:scale-[0.98] shadow-md shadow-amber-600/25 hover:shadow-lg hover:shadow-amber-600/30 border border-amber-500/30 transition-all duration-200 cursor-pointer"
+                >
+                  <img src="/python.png" alt="Python Icon" className="w-5 h-5 object-contain shrink-0" />
+                  <span>Start Python Track</span>
+                  <ArrowRight className="w-4 h-4 text-amber-200 group-hover:translate-x-1 transition-transform" />
+                </button>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl font-bold text-stone-900 mb-4 tracking-tight">
-                Python Mock Interview
-              </h1>
+              {/* Card 2: HR Questions */}
+              <div className="bg-white rounded-3xl border border-purple-200/90 p-6 sm:p-8 flex flex-col justify-between shadow-sm hover:shadow-xl hover:border-purple-300 transition-all duration-300 group">
+                <div>
+                  <div className="flex items-center justify-between gap-3 mb-5">
+                    <div className="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-200 p-2 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform duration-200 shadow-xs">
+                      <img src="/hr.png" alt="HR Logo" className="w-full h-full object-contain" />
+                    </div>
+                    <span className="text-[11px] font-bold text-purple-800 bg-purple-100/80 border border-purple-200 px-3 py-1 rounded-full">
+                      {allHrPhases.length} Categories &bull; {allHrPhases.reduce((acc, p) => acc + p.questionCount, 0)} Qs
+                    </span>
+                  </div>
 
-              <p className="text-stone-600 text-sm sm:text-base mb-8 max-w-md mx-auto leading-relaxed">
-                Master 1,839 real SDE mock interview questions across Fundamentals, Collections, Functions, OOP, Exceptions, File Handling, Advanced Python &amp; Memory Internals.
-              </p>
+                  <h3 className="text-xl sm:text-2xl font-bold text-stone-900 tracking-tight mb-2">
+                    HR &amp; Behavioral Prep
+                  </h3>
+                  <p className="text-stone-600 text-xs sm:text-sm leading-relaxed mb-5">
+                    Ace HR and culture-fit rounds with proven STAR method responses, conflict resolution, work under pressure, and leadership.
+                  </p>
 
-              <button
-                onClick={() => setView('phases')}
-                className="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 active:scale-[0.99] text-white font-semibold text-lg px-9 py-4 rounded-xl shadow-md shadow-amber-600/20 transition-all cursor-pointer"
-              >
-                Python Mock Interview →
-              </button>
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-6">
+                    <span className="text-[11px] font-semibold text-purple-900 bg-purple-50 border border-purple-200/80 px-2.5 py-1 rounded-lg">
+                      🎯 STAR Framework
+                    </span>
+                    <span className="text-[11px] font-semibold text-purple-900 bg-purple-50 border border-purple-200/80 px-2.5 py-1 rounded-lg">
+                      🗣️ Spoken Responses
+                    </span>
+                    <span className="text-[11px] font-semibold text-purple-900 bg-purple-50 border border-purple-200/80 px-2.5 py-1 rounded-lg">
+                      💼 High-Signal Q&amp;A
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCurrentTrack('hr');
+                    setSelectedPhaseId(101);
+                    setSelectedTopicId('all');
+                    setView('phases');
+                  }}
+                  className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-purple-600 via-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 active:scale-[0.98] shadow-md shadow-purple-600/25 hover:shadow-lg hover:shadow-purple-600/30 border border-purple-500/30 transition-all duration-200 cursor-pointer"
+                >
+                  <img src="/hr.png" alt="HR Icon" className="w-5 h-5 object-contain shrink-0" />
+                  <span>Start HR Track</span>
+                  <ArrowRight className="w-4 h-4 text-purple-200 group-hover:translate-x-1 transition-transform" />
+                </button>
+              </div>
             </div>
           </main>
 
@@ -1101,45 +1608,65 @@ export default function App() {
       {/* ============================================================== */}
       {view === 'phases' && (
         <div className="flex-1 flex flex-col justify-between">
-          <header className="bg-white/80 border-b border-amber-200/70 sticky top-0 z-20 backdrop-blur-md">
+          <header className={`bg-white/80 border-b sticky top-0 z-20 backdrop-blur-md ${
+            currentTrack === 'hr' ? 'border-purple-200/70' : 'border-amber-200/70'
+          }`}>
             <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
               <button
                 onClick={() => setView('home')}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-stone-700 hover:text-stone-900 bg-amber-50 hover:bg-amber-100 px-3 py-1.5 rounded-lg border border-amber-200 transition-colors cursor-pointer"
+                className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors cursor-pointer ${
+                  currentTrack === 'hr'
+                    ? 'text-stone-700 hover:text-stone-900 bg-purple-50 hover:bg-purple-100 border-purple-200'
+                    : 'text-stone-700 hover:text-stone-900 bg-amber-50 hover:bg-amber-100 border-amber-200'
+                }`}
               >
                 ← Home
               </button>
 
               <div className="flex items-center gap-2">
-                <img src="/interview.png" alt="Python Mock Interview Logo" className="w-6 h-6 rounded-md object-contain" />
+                <img
+                  src={currentTrack === 'hr' ? '/hr.png' : '/python.png'}
+                  alt="Track Logo"
+                  className="w-6 h-6 rounded-md object-contain"
+                />
                 <h2 className="text-base font-bold text-stone-900">
-                  Select Interview Phase
+                  {currentTrack === 'hr' ? 'Select HR & Behavioral Category' : 'Select Interview Phase'}
                 </h2>
               </div>
 
-              <span className="text-xs text-amber-800 bg-amber-100/70 px-2.5 py-1 rounded-full font-medium">
-                8 Phases Ready
+              <span className={`text-xs px-2.5 py-1 rounded-full font-medium border ${
+                currentTrack === 'hr'
+                  ? 'text-purple-800 bg-purple-100/70 border-purple-200'
+                  : 'text-amber-800 bg-amber-100/70 border-amber-200'
+              }`}>
+                {activePhases.length} {currentTrack === 'hr' ? 'Categories' : 'Phases'} Ready
               </span>
             </div>
           </header>
 
           <main className="flex-1 flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
             <div className="w-full text-center mb-6 sm:mb-8">
-              <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100/70 border border-amber-200/80 px-3 py-1 rounded-full mb-2">
-                <span>⚡</span>
-                <span>Select Interview Phase</span>
+              <div className={`inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full mb-2 border ${
+                currentTrack === 'hr'
+                  ? 'text-purple-800 bg-purple-100/70 border-purple-200/80'
+                  : 'text-amber-800 bg-amber-100/70 border-amber-200/80'
+              }`}>
+                <span>{currentTrack === 'hr' ? '👔' : '⚡'}</span>
+                <span>{currentTrack === 'hr' ? 'HR & Behavioral Interview Track' : 'Python Technical Interview Track'}</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold text-stone-900 tracking-tight">
-                Choose a Phase to Practice
+                {currentTrack === 'hr' ? 'Choose an HR Category to Practice' : 'Choose a Phase to Practice'}
               </h2>
               <p className="text-stone-500 text-xs sm:text-sm mt-1.5 max-w-lg mx-auto">
-                Comprehensive 1,839 questions with spoken responses, comparison tables, code examples &amp; custom edits.
+                {currentTrack === 'hr'
+                  ? 'Comprehensive behavioral, STAR method & culture-fit interview questions with spoken responses and custom edits.'
+                  : 'Comprehensive 1,839 questions with spoken responses, comparison tables, code examples & custom edits.'}
               </p>
             </div>
 
             {/* Proper Grid Display of Phases (Max 5 cards per row, then stack below) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4 w-full">
-              {allPhases.map((p) => {
+              {activePhases.map((p) => {
                 const phaseStyles = {
                   1: {
                     accentBorder: 'border-t-amber-500',
@@ -1205,56 +1732,281 @@ export default function App() {
                     iconBg: 'bg-cyan-600',
                     highlight: 'from-cyan-500/10 to-transparent',
                   },
+                  101: {
+                    accentBorder: 'border-t-purple-600',
+                    borderHover: 'hover:border-purple-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-purple-600 hover:bg-purple-700 text-white',
+                    iconBg: 'bg-purple-600',
+                    highlight: 'from-purple-500/10 to-transparent',
+                  },
+                  102: {
+                    accentBorder: 'border-t-purple-700',
+                    borderHover: 'hover:border-purple-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-purple-700 hover:bg-purple-800 text-white',
+                    iconBg: 'bg-purple-700',
+                    highlight: 'from-purple-500/10 to-transparent',
+                  },
+                  103: {
+                    accentBorder: 'border-t-violet-600',
+                    borderHover: 'hover:border-violet-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-violet-700 hover:bg-violet-800 text-white',
+                    iconBg: 'bg-violet-600',
+                    highlight: 'from-violet-500/10 to-transparent',
+                  },
+                  104: {
+                    accentBorder: 'border-t-fuchsia-600',
+                    borderHover: 'hover:border-fuchsia-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-fuchsia-700 hover:bg-fuchsia-800 text-white',
+                    iconBg: 'bg-fuchsia-600',
+                    highlight: 'from-fuchsia-500/10 to-transparent',
+                  },
+                  105: {
+                    accentBorder: 'border-t-purple-600',
+                    borderHover: 'hover:border-purple-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-purple-600 hover:bg-purple-700 text-white',
+                    iconBg: 'bg-purple-600',
+                    highlight: 'from-purple-500/10 to-transparent',
+                  },
+                  106: {
+                    accentBorder: 'border-t-purple-800',
+                    borderHover: 'hover:border-purple-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-purple-800 hover:bg-purple-900 text-white',
+                    iconBg: 'bg-purple-800',
+                    highlight: 'from-purple-500/10 to-transparent',
+                  },
+                  107: {
+                    accentBorder: 'border-t-violet-700',
+                    borderHover: 'hover:border-violet-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-violet-700 hover:bg-violet-800 text-white',
+                    iconBg: 'bg-violet-700',
+                    highlight: 'from-violet-500/10 to-transparent',
+                  },
+                  108: {
+                    accentBorder: 'border-t-purple-700',
+                    borderHover: 'hover:border-purple-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-purple-700 hover:bg-purple-800 text-white',
+                    iconBg: 'bg-purple-700',
+                    highlight: 'from-purple-500/10 to-transparent',
+                  },
+                  109: {
+                    accentBorder: 'border-t-fuchsia-700',
+                    borderHover: 'hover:border-fuchsia-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-fuchsia-700 hover:bg-fuchsia-800 text-white',
+                    iconBg: 'bg-fuchsia-700',
+                    highlight: 'from-fuchsia-500/10 to-transparent',
+                  },
+                  110: {
+                    accentBorder: 'border-t-purple-600',
+                    borderHover: 'hover:border-purple-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-purple-600 hover:bg-purple-700 text-white',
+                    iconBg: 'bg-purple-600',
+                    highlight: 'from-purple-500/10 to-transparent',
+                  },
+                  111: {
+                    accentBorder: 'border-t-indigo-600',
+                    borderHover: 'hover:border-indigo-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-indigo-600 hover:bg-indigo-700 text-white',
+                    iconBg: 'bg-indigo-600',
+                    highlight: 'from-indigo-500/10 to-transparent',
+                  },
+                  112: {
+                    accentBorder: 'border-t-purple-700',
+                    borderHover: 'hover:border-purple-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-purple-700 hover:bg-purple-800 text-white',
+                    iconBg: 'bg-purple-700',
+                    highlight: 'from-purple-500/10 to-transparent',
+                  },
+                  113: {
+                    accentBorder: 'border-t-violet-600',
+                    borderHover: 'hover:border-violet-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-violet-600 hover:bg-violet-700 text-white',
+                    iconBg: 'bg-violet-600',
+                    highlight: 'from-violet-500/10 to-transparent',
+                  },
+                  114: {
+                    accentBorder: 'border-t-fuchsia-600',
+                    borderHover: 'hover:border-fuchsia-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-fuchsia-600 hover:bg-fuchsia-700 text-white',
+                    iconBg: 'bg-fuchsia-600',
+                    highlight: 'from-fuchsia-500/10 to-transparent',
+                  },
+                  115: {
+                    accentBorder: 'border-t-purple-600',
+                    borderHover: 'hover:border-purple-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-purple-600 hover:bg-purple-700 text-white',
+                    iconBg: 'bg-purple-600',
+                    highlight: 'from-purple-500/10 to-transparent',
+                  },
+                  116: {
+                    accentBorder: 'border-t-violet-700',
+                    borderHover: 'hover:border-violet-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-violet-700 hover:bg-violet-800 text-white',
+                    iconBg: 'bg-violet-700',
+                    highlight: 'from-violet-500/10 to-transparent',
+                  },
+                  117: {
+                    accentBorder: 'border-t-purple-600',
+                    borderHover: 'hover:border-purple-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-purple-600 hover:bg-purple-700 text-white',
+                    iconBg: 'bg-purple-600',
+                    highlight: 'from-purple-500/10 to-transparent',
+                  },
+                  118: {
+                    accentBorder: 'border-t-indigo-600',
+                    borderHover: 'hover:border-indigo-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-indigo-600 hover:bg-indigo-700 text-white',
+                    iconBg: 'bg-indigo-600',
+                    highlight: 'from-indigo-500/10 to-transparent',
+                  },
+                  119: {
+                    accentBorder: 'border-t-purple-600',
+                    borderHover: 'hover:border-purple-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-purple-600 hover:bg-purple-700 text-white',
+                    iconBg: 'bg-purple-600',
+                    highlight: 'from-purple-500/10 to-transparent',
+                  },
+                  120: {
+                    accentBorder: 'border-t-fuchsia-600',
+                    borderHover: 'hover:border-fuchsia-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-fuchsia-600 hover:bg-fuchsia-700 text-white',
+                    iconBg: 'bg-fuchsia-600',
+                    highlight: 'from-fuchsia-500/10 to-transparent',
+                  },
+                  121: {
+                    accentBorder: 'border-t-purple-700',
+                    borderHover: 'hover:border-purple-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-purple-700 hover:bg-purple-800 text-white',
+                    iconBg: 'bg-purple-700',
+                    highlight: 'from-purple-500/10 to-transparent',
+                  },
+                  122: {
+                    accentBorder: 'border-t-indigo-600',
+                    borderHover: 'hover:border-indigo-400',
+                    badgeBg: 'bg-purple-100 text-purple-800 border-purple-200',
+                    btnBg: 'bg-indigo-600 hover:bg-indigo-700 text-white',
+                    iconBg: 'bg-indigo-600',
+                    highlight: 'from-indigo-500/10 to-transparent',
+                  },
                 };
-                const s = phaseStyles[p.id] || phaseStyles[1];
+                const s = phaseStyles[p.id] || phaseStyles[101] || phaseStyles[1];
                 const phaseName = p.title.includes(': ') ? p.title.split(': ')[1] : p.title;
+                const tagLabel = currentTrack === 'hr' ? `Category ${p.id - 100}` : `Phase ${p.id}`;
+                const isSpecialCategory = p.id === 122;
 
                 return (
                   <div
                     key={p.id}
                     onClick={() => handleSelectPhase(p.id)}
-                    className={`group bg-white rounded-2xl border border-stone-200/90 ${s.borderHover} border-t-4 ${s.accentBorder} p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between cursor-pointer hover:-translate-y-1 relative overflow-hidden`}
+                    className={`group rounded-2xl transition-all duration-200 flex flex-col justify-between cursor-pointer hover:-translate-y-1 relative overflow-hidden p-4 sm:p-5 ${
+                      isSpecialCategory
+                        ? 'bg-gradient-to-b from-amber-50/90 via-purple-50/40 to-white border-2 border-amber-400 shadow-md hover:shadow-xl ring-2 ring-amber-300/60 hover:ring-amber-400'
+                        : `bg-white border border-stone-200/90 ${s.borderHover} border-t-4 ${s.accentBorder} shadow-xs hover:shadow-md`
+                    }`}
                   >
-                    <div className={`absolute top-0 inset-x-0 h-16 bg-gradient-to-b ${s.highlight} pointer-events-none opacity-60`} />
+                    {/* Top gradient highlight banner */}
+                    <div className={`absolute top-0 inset-x-0 h-16 pointer-events-none ${
+                      isSpecialCategory
+                        ? 'bg-gradient-to-b from-amber-400/25 via-purple-400/10 to-transparent opacity-90'
+                        : `bg-gradient-to-b ${s.highlight} opacity-60`
+                    }`} />
+
+                    {/* Ribbon for Category 22: Most Important / Common Questions */}
+                    {isSpecialCategory && (
+                      <div className="absolute top-0 right-0 bg-gradient-to-l from-amber-500 via-orange-500 to-amber-600 text-white text-[10px] font-extrabold px-3 py-0.5 rounded-bl-lg shadow-xs uppercase tracking-wider flex items-center gap-1 z-10">
+                        <span>⭐</span> MOST COMMON
+                      </div>
+                    )}
 
                     <div>
                       {/* Top Header Tag Row */}
                       <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className={`text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${s.badgeBg}`}>
-                          Phase {p.id}
-                        </span>
-                        <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2 py-0.5 rounded-full">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <span className={`text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md border ${
+                            isSpecialCategory
+                              ? 'bg-amber-100 text-amber-900 border-amber-300 font-extrabold'
+                              : s.badgeBg
+                          }`}>
+                            {tagLabel}
+                          </span>
+                          {isSpecialCategory && (
+                            <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-500 text-white shadow-xs flex items-center gap-0.5 animate-pulse">
+                              <span>⭐</span> MUST PREPARE
+                            </span>
+                          )}
+                        </div>
+                        <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                          isSpecialCategory
+                            ? 'text-amber-950 bg-amber-200/80 border border-amber-300 font-extrabold'
+                            : 'text-stone-600 bg-stone-100'
+                        }`}>
                           {p.questionCount} Qs
                         </span>
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-base font-bold text-stone-900 group-hover:text-amber-900 transition-colors leading-snug line-clamp-2 mb-1.5">
+                      <h3 className={`text-base font-bold transition-colors leading-snug line-clamp-2 mb-1.5 ${
+                        isSpecialCategory
+                          ? 'text-stone-900 group-hover:text-amber-950 font-extrabold'
+                          : currentTrack === 'hr' ? 'group-hover:text-purple-900 text-stone-900' : 'group-hover:text-amber-900 text-stone-900'
+                      }`}>
+                        {isSpecialCategory && <span className="text-amber-500 mr-1 text-sm">⭐</span>}
                         {phaseName}
                       </h3>
 
                       {/* Topic Count */}
-                      <div className="text-[11px] font-semibold text-amber-800/90 mb-2">
-                        {p.topicCount} Topics Included
+                      <div className={`text-[11px] font-semibold mb-2 ${
+                        isSpecialCategory
+                          ? 'text-amber-900 font-bold flex items-center gap-1'
+                          : currentTrack === 'hr' ? 'text-purple-800/90' : 'text-amber-800/90'
+                      }`}>
+                        {isSpecialCategory && <span>🔥</span>}
+                        {p.topicCount} Topics Included {isSpecialCategory && '• 125 Core Qs'}
                       </div>
 
                       {/* Description Summary */}
-                      <p className="text-xs text-stone-500 leading-relaxed line-clamp-3">
+                      <p className={`text-xs leading-relaxed line-clamp-3 ${
+                        isSpecialCategory ? 'text-stone-600 font-medium' : 'text-stone-500'
+                      }`}>
                         {p.description}
                       </p>
                     </div>
 
                     {/* Bottom CTA Button */}
-                    <div className="mt-4 pt-3 border-t border-stone-100">
+                    <div className={`mt-4 pt-3 border-t ${isSpecialCategory ? 'border-amber-200/80' : 'border-stone-100'}`}>
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleSelectPhase(p.id);
                         }}
-                        className={`w-full py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs group-hover:shadow-xs cursor-pointer ${s.btnBg}`}
+                        className={`w-full py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-2xs group-hover:shadow-xs cursor-pointer ${
+                          isSpecialCategory
+                            ? 'bg-gradient-to-r from-amber-500 via-orange-500 to-purple-700 hover:from-amber-600 hover:to-purple-800 text-white shadow-md'
+                            : s.btnBg
+                        }`}
                       >
-                        <span>Start Practice</span>
+                        <span>{isSpecialCategory ? '⭐ Master Common Questions' : 'Start Practice'}</span>
                         <span className="group-hover:translate-x-0.5 transition-transform">→</span>
                       </button>
                     </div>
@@ -1264,12 +2016,12 @@ export default function App() {
             </div>
 
             <p className="text-xs text-stone-400 mt-6 sm:mt-8 text-center">
-              Click any phase card to jump straight into its questions with instant dropdown answers
+              Click any module card to jump straight into its questions with instant dropdown answers
             </p>
           </main>
 
           <footer className="py-4 text-center text-xs text-stone-400">
-            Python Mock Interview Prep
+            {currentTrack === 'hr' ? 'HR & Behavioral Interview Prep' : 'Python Mock Interview Prep'}
           </footer>
         </div>
       )}
@@ -1279,41 +2031,62 @@ export default function App() {
       {/* ============================================================== */}
       {view === 'questions' && (
         <div className="flex-1 flex flex-col">
-          <header className="bg-white/80 border-b border-amber-200/70 sticky top-0 z-20 backdrop-blur-md">
+          <header className={`bg-white/80 border-b ${isHrTrack ? 'border-purple-200/70' : 'border-amber-200/70'} sticky top-0 z-20 backdrop-blur-md`}>
             <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   onClick={() => setView('home')}
-                  className="inline-flex items-center gap-1.5 p-1 rounded-lg hover:bg-amber-100/60 transition-colors cursor-pointer"
+                  className={`inline-flex items-center gap-1.5 p-1 rounded-lg ${isHrTrack ? 'hover:bg-purple-100/60' : 'hover:bg-amber-100/60'} transition-colors cursor-pointer`}
                   title="Back to Home"
                 >
-                  <img src="/interview.png" alt="Python Mock Interview Logo" className="w-6 h-6 rounded-md object-contain" />
+                  <img
+                    src={currentTrack === 'hr' ? '/hr.png' : '/python.png'}
+                    alt="Track Logo"
+                    className="w-6 h-6 rounded-md object-contain"
+                  />
                 </button>
 
                 <button
                   onClick={() => setView('phases')}
-                  className="inline-flex items-center gap-1 text-xs font-semibold text-stone-700 hover:text-stone-900 bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded-lg border border-amber-200 transition-colors cursor-pointer"
+                  className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-lg border transition-colors cursor-pointer ${
+                    isHrTrack
+                      ? 'text-purple-900 bg-purple-50 hover:bg-purple-100 border-purple-200'
+                      : 'text-stone-700 hover:text-stone-900 bg-amber-50 hover:bg-amber-100 border-amber-200'
+                  }`}
                 >
-                  ← Phases
+                  {currentTrack === 'hr' ? '← HR Categories' : '← Phases'}
                 </button>
 
                 {/* Small Horizontal Phase Buttons */}
                 <div className="flex items-center gap-1.5 overflow-x-auto py-0.5">
-                  {allPhases.map((p) => {
+                  {activePhases.map((p) => {
                     const isActive = p.id === selectedPhaseId;
+                    const isSpecial = p.id === 122;
                     return (
                       <button
                         key={p.id}
                         onClick={() => handleSelectPhase(p.id)}
                         className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                           isActive
-                            ? 'bg-amber-600 text-white shadow-xs'
+                            ? isSpecial
+                              ? 'bg-gradient-to-r from-amber-500 to-purple-700 text-white shadow-xs ring-1 ring-amber-300'
+                              : isHrTrack
+                              ? 'bg-purple-600 text-white shadow-xs'
+                              : 'bg-amber-600 text-white shadow-xs'
+                            : isSpecial
+                            ? 'bg-amber-50 hover:bg-amber-100 text-amber-950 border border-amber-300 font-bold'
+                            : isHrTrack
+                            ? 'bg-white hover:bg-purple-50 text-stone-700 border border-purple-200 hover:border-purple-300'
                             : 'bg-white hover:bg-amber-50 text-stone-700 border border-amber-200 hover:border-amber-300'
                         }`}
                       >
-                        <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-white' : 'bg-amber-500'}`}></span>
-                        <span>{p.shortTitle}</span>
-                        <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${isActive ? 'bg-amber-700 text-amber-100' : 'bg-stone-100 text-stone-500'}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-white' : isSpecial ? 'bg-amber-500' : isHrTrack ? 'bg-purple-500' : 'bg-amber-500'}`}></span>
+                        <span>{isSpecial ? `⭐ ${p.shortTitle}` : p.shortTitle}</span>
+                        <span className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                          isActive 
+                            ? (isSpecial ? 'bg-purple-900 text-amber-100' : isHrTrack ? 'bg-purple-700 text-purple-100' : 'bg-amber-700 text-amber-100') 
+                            : isSpecial ? 'bg-amber-200 text-amber-900 font-bold' : 'bg-stone-100 text-stone-500'
+                        }`}>
                           {p.questionCount}
                         </span>
                       </button>
@@ -1330,7 +2103,11 @@ export default function App() {
                     placeholder="Search questions or keywords..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-3.5 py-1.5 text-xs sm:text-sm rounded-xl border border-amber-200 bg-amber-50/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/40 text-stone-800 placeholder-stone-400"
+                    className={`w-full px-3.5 py-1.5 text-xs sm:text-sm rounded-xl border ${
+                      isHrTrack
+                        ? 'border-purple-200 bg-purple-50/40 focus:ring-purple-500/40'
+                        : 'border-amber-200 bg-amber-50/40 focus:ring-amber-500/40'
+                    } focus:bg-white focus:outline-none focus:ring-2 text-stone-800 placeholder-stone-400`}
                   />
                 </div>
                 <button
@@ -1338,9 +2115,13 @@ export default function App() {
                   onClick={() => fetchPhaseQuestions(selectedPhaseId)}
                   disabled={isSyncing}
                   title="Sync with cloud database (pulls edits from other devices)"
-                  className="p-2 rounded-xl border border-amber-200 bg-white hover:bg-amber-50 text-stone-600 hover:text-stone-900 transition-all cursor-pointer shrink-0 shadow-2xs flex items-center justify-center"
+                  className={`p-2 rounded-xl border ${
+                    isHrTrack
+                      ? 'border-purple-200 bg-white hover:bg-purple-50'
+                      : 'border-amber-200 bg-white hover:bg-amber-50'
+                  } text-stone-600 hover:text-stone-900 transition-all cursor-pointer shrink-0 shadow-2xs flex items-center justify-center`}
                 >
-                  <svg className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-amber-600' : 'text-stone-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg className={`w-3.5 h-3.5 ${isSyncing ? (isHrTrack ? 'animate-spin text-purple-600' : 'animate-spin text-amber-600') : 'text-stone-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                   </svg>
                 </button>
@@ -1352,8 +2133,8 @@ export default function App() {
             
             {/* Left Sidebar: Topics */}
             <aside className="md:col-span-4 lg:col-span-3">
-              <div className="bg-white border border-amber-200/80 rounded-2xl p-3 shadow-xs sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto">
-                <div className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-amber-800 flex items-center justify-between">
+              <div className={`bg-white border ${isHrTrack ? 'border-purple-200/80' : 'border-amber-200/80'} rounded-2xl p-3 shadow-xs sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto`}>
+                <div className={`px-3 py-2 text-xs font-bold uppercase tracking-wider ${isHrTrack ? 'text-purple-800' : 'text-amber-800'} flex items-center justify-between`}>
                   <div className="flex items-center gap-1.5">
                     <span>Topics</span>
                     <span className="text-[11px] text-stone-500 font-normal">({topics.length})</span>
@@ -1361,7 +2142,11 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => setIsAddModalOpen(true)}
-                    className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 hover:text-amber-950 bg-amber-100/80 hover:bg-amber-200 px-2 py-0.5 rounded-md transition-colors cursor-pointer"
+                    className={`inline-flex items-center gap-1 text-[11px] font-bold ${
+                      isHrTrack
+                        ? 'text-purple-800 hover:text-purple-950 bg-purple-100/80 hover:bg-purple-200'
+                        : 'text-amber-800 hover:text-amber-950 bg-amber-100/80 hover:bg-amber-200'
+                    } px-2 py-0.5 rounded-md transition-colors cursor-pointer`}
                     title="Add Question to a Topic"
                   >
                     <span>+</span>
@@ -1374,13 +2159,23 @@ export default function App() {
                     onClick={() => setSelectedTopicId('all')}
                     className={`w-full text-left px-3 py-2 rounded-xl text-sm font-medium transition-colors flex items-center justify-between cursor-pointer ${
                       selectedTopicId === 'all'
-                        ? 'bg-amber-600 text-white shadow-sm'
+                        ? isHrTrack
+                          ? 'bg-purple-600 text-white shadow-sm'
+                          : 'bg-amber-600 text-white shadow-sm'
+                        : isHrTrack
+                        ? 'text-stone-700 hover:bg-purple-50'
                         : 'text-stone-700 hover:bg-amber-50'
                     }`}
                   >
                     <span>All Topics</span>
                     <span className={`text-xs px-2 py-0.5 rounded-full ${
-                      selectedTopicId === 'all' ? 'bg-amber-700 text-amber-100' : 'bg-amber-100/70 text-amber-800'
+                      selectedTopicId === 'all'
+                        ? isHrTrack
+                          ? 'bg-purple-700 text-purple-100'
+                          : 'bg-amber-700 text-amber-100'
+                        : isHrTrack
+                        ? 'bg-purple-100/70 text-purple-800'
+                        : 'bg-amber-100/70 text-amber-800'
                     }`}>
                       {allPhaseQuestions.length}
                     </span>
@@ -1392,13 +2187,23 @@ export default function App() {
                       onClick={() => setSelectedTopicId(t.id)}
                       className={`w-full text-left px-3 py-2 rounded-xl text-sm font-medium transition-colors flex items-center justify-between cursor-pointer ${
                         selectedTopicId === t.id
-                          ? 'bg-amber-600 text-white shadow-sm'
+                          ? isHrTrack
+                            ? 'bg-purple-600 text-white shadow-sm'
+                            : 'bg-amber-600 text-white shadow-sm'
+                          : isHrTrack
+                          ? 'text-stone-700 hover:bg-purple-50'
                           : 'text-stone-700 hover:bg-amber-50'
                       }`}
                     >
                       <span className="truncate">{t.id}. {t.name}</span>
                       <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-                        selectedTopicId === t.id ? 'bg-amber-700 text-amber-100' : 'bg-amber-100/70 text-amber-800'
+                        selectedTopicId === t.id
+                          ? isHrTrack
+                            ? 'bg-purple-700 text-purple-100'
+                            : 'bg-amber-700 text-amber-100'
+                          : isHrTrack
+                          ? 'bg-purple-100/70 text-purple-800'
+                          : 'bg-amber-100/70 text-amber-800'
                       }`}>
                         {t.count}
                       </span>
@@ -1407,25 +2212,36 @@ export default function App() {
                 </div>
 
                 {/* Quick phase switcher in sidebar */}
-                <div className="pt-3 mt-3 border-t border-amber-100">
-                  <div className="text-[11px] font-bold text-amber-800 uppercase tracking-wider mb-1.5 px-1">
-                    Quick Phase Switch:
+                <div className={`pt-3 mt-3 border-t ${isHrTrack ? 'border-purple-100' : 'border-amber-100'}`}>
+                  <div className={`text-[11px] font-bold ${isHrTrack ? 'text-purple-800' : 'text-amber-800'} uppercase tracking-wider mb-1.5 px-1`}>
+                    {currentTrack === 'hr' ? 'Quick Category Switch:' : 'Quick Phase Switch:'}
                   </div>
-                  <div className="grid grid-cols-8 gap-1">
-                    {allPhases.map((p) => (
-                      <button
-                        key={p.id}
-                        onClick={() => handleSelectPhase(p.id)}
-                        title={p.title}
-                        className={`py-1 text-center text-xs font-bold rounded-lg transition-colors cursor-pointer ${
-                          selectedPhaseId === p.id
-                            ? 'bg-amber-600 text-white shadow-xs'
-                            : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200'
-                        }`}
-                      >
-                        P{p.id}
-                      </button>
-                    ))}
+                  <div className={`grid ${currentTrack === 'hr' ? (activePhases.length > 6 ? 'grid-cols-4 sm:grid-cols-6' : 'grid-cols-6') : 'grid-cols-8'} gap-1`}>
+                    {activePhases.map((p) => {
+                      const isSpecial = p.id === 122;
+                      return (
+                        <button
+                          key={p.id}
+                          onClick={() => handleSelectPhase(p.id)}
+                          title={p.title}
+                          className={`py-1 text-center text-xs font-bold rounded-lg transition-colors cursor-pointer ${
+                            selectedPhaseId === p.id
+                              ? isSpecial
+                                ? 'bg-gradient-to-r from-amber-500 to-purple-700 text-white shadow-xs ring-2 ring-amber-300'
+                                : isHrTrack
+                                ? 'bg-purple-600 text-white shadow-xs'
+                                : 'bg-amber-600 text-white shadow-xs'
+                              : isSpecial
+                              ? 'bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300 font-extrabold shadow-2xs'
+                              : isHrTrack
+                              ? 'bg-purple-50 hover:bg-purple-100 text-purple-900 border border-purple-200'
+                              : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200'
+                          }`}
+                        >
+                          {isSpecial ? '⭐H22' : currentTrack === 'hr' ? `H${p.id - 100}` : `P${p.id}`}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -1450,7 +2266,11 @@ export default function App() {
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     onClick={handleExpandAll}
-                    className="text-xs font-semibold text-amber-800 hover:text-amber-900 bg-amber-50 hover:bg-amber-100/80 px-2.5 py-1 rounded-lg border border-amber-200 transition-colors cursor-pointer"
+                    className={`text-xs font-semibold ${
+                      isHrTrack
+                        ? 'text-purple-800 hover:text-purple-900 bg-purple-50 hover:bg-purple-100/80 border-purple-200'
+                        : 'text-amber-800 hover:text-amber-900 bg-amber-50 hover:bg-amber-100/80 border-amber-200'
+                    } px-2.5 py-1 rounded-lg border transition-colors cursor-pointer`}
                   >
                     Expand All
                   </button>
@@ -1463,7 +2283,9 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => setIsAddModalOpen(true)}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 px-3 py-1.5 rounded-lg shadow-xs transition-colors cursor-pointer"
+                    className={`inline-flex items-center gap-1.5 text-xs font-bold text-white ${
+                      isHrTrack ? 'bg-purple-600 hover:bg-purple-700' : 'bg-amber-600 hover:bg-amber-700'
+                    } px-3 py-1.5 rounded-lg shadow-xs transition-colors cursor-pointer`}
                   >
                     <span>+</span>
                     <span>Add Question</span>
@@ -1475,12 +2297,14 @@ export default function App() {
               </div>
 
               {filteredQuestions.length === 0 ? (
-                <div className="bg-white border border-amber-200/80 rounded-2xl p-10 text-center text-stone-500 text-sm">
+                <div className={`bg-white border ${isHrTrack ? 'border-purple-200/80' : 'border-amber-200/80'} rounded-2xl p-10 text-center text-stone-500 text-sm`}>
                   <p className="mb-3 text-stone-600">No questions found matching your filter or search.</p>
                   <button
                     type="button"
                     onClick={() => setIsAddModalOpen(true)}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-amber-600 hover:bg-amber-700 px-4 py-2 rounded-xl shadow-xs transition-colors cursor-pointer"
+                    className={`inline-flex items-center gap-1.5 text-xs font-bold text-white ${
+                      isHrTrack ? 'bg-purple-600 hover:bg-purple-700' : 'bg-amber-600 hover:bg-amber-700'
+                    } px-4 py-2 rounded-xl shadow-xs transition-colors cursor-pointer`}
                   >
                     <span>+</span>
                     <span>Add First Question to this Topic</span>
@@ -1499,16 +2323,28 @@ export default function App() {
                       <div
                         key={q.id}
                         className={`bg-white border transition-all rounded-2xl overflow-hidden shadow-2xs ${
-                          isOpen ? 'border-amber-400 ring-1 ring-amber-300/50' : 'border-amber-200/80 hover:border-amber-300'
+                          isOpen
+                            ? isHrTrack
+                              ? 'border-purple-400 ring-1 ring-purple-300/50'
+                              : 'border-amber-400 ring-1 ring-amber-300/50'
+                            : isHrTrack
+                            ? 'border-purple-200/80 hover:border-purple-300'
+                            : 'border-amber-200/80 hover:border-amber-300'
                         }`}
                       >
                         {/* Question Header (Click to toggle dropdown) */}
                         <button
                           onClick={() => toggleQuestion(q.id)}
-                          className="w-full text-left p-4 sm:p-5 flex items-start justify-between gap-4 cursor-pointer hover:bg-amber-50/30 transition-colors"
+                          className={`w-full text-left p-4 sm:p-5 flex items-start justify-between gap-4 cursor-pointer ${
+                            isHrTrack ? 'hover:bg-purple-50/30' : 'hover:bg-amber-50/30'
+                          } transition-colors`}
                         >
                           <div className="flex items-start gap-3 min-w-0">
-                            <span className="inline-block mt-0.5 text-xs font-bold text-amber-800 bg-amber-100/80 border border-amber-200 px-2 py-0.5 rounded-md shrink-0">
+                            <span className={`inline-block mt-0.5 text-xs font-bold ${
+                              isHrTrack
+                                ? 'text-purple-800 bg-purple-100/80 border-purple-200'
+                                : 'text-amber-800 bg-amber-100/80 border-amber-200'
+                            } border px-2 py-0.5 rounded-md shrink-0`}>
                               Q{q.id}
                             </span>
                             <div className="min-w-0">
@@ -1523,7 +2359,11 @@ export default function App() {
                                   </span>
                                 )}
                                 {isCustomized && (
-                                  <span className="text-[10px] font-semibold bg-amber-100 text-amber-900 border border-amber-300/80 px-1.5 py-0.2 rounded flex items-center gap-0.5">
+                                  <span className={`text-[10px] font-semibold ${
+                                    isHrTrack
+                                      ? 'bg-purple-100 text-purple-900 border-purple-300/80'
+                                      : 'bg-amber-100 text-amber-900 border-amber-300/80'
+                                  } border px-1.5 py-0.2 rounded flex items-center gap-0.5`}>
                                     ✏️ Edited
                                   </span>
                                 )}
@@ -1533,7 +2373,11 @@ export default function App() {
                                   </span>
                                 )}
                                 {q.code && (
-                                  <span className="text-[10px] bg-amber-50 border border-amber-200 text-amber-800 px-1.5 py-0.2 rounded font-mono">
+                                  <span className={`text-[10px] ${
+                                    isHrTrack
+                                      ? 'bg-purple-50 border-purple-200 text-purple-800'
+                                      : 'bg-amber-50 border-amber-200 text-amber-800'
+                                  } border px-1.5 py-0.2 rounded font-mono`}>
                                     includes code
                                   </span>
                                 )}
@@ -1543,8 +2387,14 @@ export default function App() {
 
                           {/* Dropdown Chevron Indicator */}
                           <span
-                            className={`text-amber-700 text-xs font-bold w-6 h-6 rounded-full bg-amber-50 border border-amber-200 flex items-center justify-center shrink-0 transition-transform duration-200 ${
-                              isOpen ? 'rotate-180 bg-amber-200 text-amber-900' : ''
+                            className={`text-xs font-bold w-6 h-6 rounded-full border flex items-center justify-center shrink-0 transition-transform duration-200 ${
+                              isHrTrack
+                                ? isOpen
+                                  ? 'rotate-180 bg-purple-200 text-purple-900 border-purple-300'
+                                  : 'bg-purple-50 border-purple-200 text-purple-700'
+                                : isOpen
+                                ? 'rotate-180 bg-amber-200 text-amber-900 border-amber-300'
+                                : 'bg-amber-50 border-amber-200 text-amber-700'
                             }`}
                           >
                             ▼
@@ -1553,7 +2403,9 @@ export default function App() {
 
                         {/* Dropdown Body: Spoken Answer in Green, Key Concepts, Code */}
                         {isOpen && (
-                          <div className="p-5 sm:p-6 border-t border-amber-100 bg-[#fffdf9] space-y-4 animate-in fade-in duration-150">
+                          <div className={`p-5 sm:p-6 border-t ${
+                            isHrTrack ? 'border-purple-100 bg-[#faf8ff]' : 'border-amber-100 bg-[#fffdf9]'
+                          } space-y-4 animate-in fade-in duration-150`}>
                             
                             {/* Spoken Answer Section with Inline Edit & Save */}
                             <AnswerSection
@@ -1569,8 +2421,12 @@ export default function App() {
 
                             {/* Key Concepts / Level */}
                             {q.keyConcepts && (
-                              <div className="bg-amber-50/70 border border-amber-200/80 rounded-xl p-3.5">
-                                <div className="text-xs font-bold uppercase tracking-wider text-amber-800 mb-1">
+                              <div className={`${
+                                isHrTrack ? 'bg-purple-50/70 border-purple-200/80' : 'bg-amber-50/70 border-amber-200/80'
+                              } border rounded-xl p-3.5`}>
+                                <div className={`text-xs font-bold uppercase tracking-wider ${
+                                  isHrTrack ? 'text-purple-800' : 'text-amber-800'
+                                } mb-1`}>
                                   Key Concepts / Details:
                                 </div>
                                 <p className="text-xs sm:text-sm text-stone-700">
@@ -1606,10 +2462,16 @@ export default function App() {
       <AddQuestionModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        phases={allPhases}
+        phases={activePhases}
         currentPhaseId={selectedPhaseId}
         currentTopicId={selectedTopicId}
         onAdd={handleAddQuestion}
+      />
+
+      {/* HR Questions Modal */}
+      <HrQuestionsModal
+        isOpen={isHrModalOpen}
+        onClose={() => setIsHrModalOpen(false)}
       />
 
       {/* Toast Notification */}
