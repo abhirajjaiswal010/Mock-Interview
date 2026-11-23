@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { allPhases } from './data/interviewData.js';
 import { allHrPhases } from './data/hrInterviewData.js';
 import { allCorePhases } from './data/coreInterviewData.js';
@@ -70,52 +70,129 @@ function CodeBlock({ code, output }) {
 }
 
 // Render inline code backticks with distinct styling
-// Formats inline markdown: code `code`, bold/highlight **keyword** or __keyword__, and italic *text*
-function renderFormattedInline(text) {
+// Formats inline markdown: code `code`, bold/highlight **keyword** or __keyword__, italic *text*, strikethrough, and links
+function renderFormattedInline(text, theme = 'emerald') {
   if (!text) return null;
-  // Splits by inline code (`...`), bold/highlight (**...** or __...__), and italic (*...*)
-  const parts = text.split(/(`[^`]+`|\*\*[^*]+\*\*|__[^_]+__|\*[^*]+\*)/g);
+
+  const isCore = theme === 'blue';
+  const isHr = theme === 'purple';
+
+  const codeCls = isCore
+    ? 'font-mono text-blue-900 bg-blue-100/90 border border-blue-300/70 px-1.5 py-0.5 rounded text-[11px] sm:text-xs font-semibold mx-0.5 inline-block'
+    : isHr
+    ? 'font-mono text-purple-900 bg-purple-100/90 border border-purple-300/70 px-1.5 py-0.5 rounded text-[11px] sm:text-xs font-semibold mx-0.5 inline-block'
+    : 'font-mono text-emerald-900 bg-emerald-100/90 border border-emerald-300/70 px-1.5 py-0.5 rounded text-[11px] sm:text-xs font-semibold mx-0.5 inline-block';
+
+  const boldCls = isCore
+    ? 'font-bold text-blue-950'
+    : isHr
+    ? 'font-bold text-purple-950'
+    : 'font-bold text-emerald-900';
+
+  // Splits by inline code (`...`), bold-italic (***...***), bold (**...** or __...__), italic (*...*), strikethrough (~~...~~), and markdown links ([text](url))
+  const parts = text.split(/(`[^`]+`|\*\*\*[^*]+\*\*\*|\*\*[^*]+\*\*|__[^_]+__|\*[^*\n]+\*|~~[^~\n]+~~|\[[^\]]+\]\([^)]+\))/g);
   return parts.map((part, index) => {
+    if (!part) return null;
+
     // 1. Inline code: `code`
-    if (part.startsWith('`') && part.endsWith('`') && part.length > 2) {
+    if (part.startsWith('`') && part.endsWith('`') && part.length >= 2) {
       return (
-        <code
-          key={index}
-          className="font-mono text-emerald-900 bg-emerald-100/90 border border-emerald-300/70 px-1.5 py-0.5 rounded text-[11px] sm:text-xs font-semibold mx-0.5 inline-block"
-        >
+        <code key={index} className={codeCls}>
           {part.slice(1, -1)}
         </code>
       );
     }
-    // 2. Bold & Keyword Highlight: **keyword** or __keyword__ (Dark green without bg)
+    // 2. Bold-Italic: ***text***
+    if (part.startsWith('***') && part.endsWith('***') && part.length >= 6) {
+      return (
+        <strong key={index} className={`${boldCls} italic`}>
+          {part.slice(3, -3)}
+        </strong>
+      );
+    }
+    // 3. Bold & Keyword Highlight: **keyword** or __keyword__
     if (
       ((part.startsWith('**') && part.endsWith('**')) ||
        (part.startsWith('__') && part.endsWith('__'))) &&
-      part.length > 4
+      part.length >= 4
     ) {
       return (
-        <strong
-          key={index}
-          className="font-bold text-emerald-800"
-        >
+        <strong key={index} className={boldCls}>
           {part.slice(2, -2)}
         </strong>
       );
     }
-    // 3. Italic: *italic*
-    if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
+    // 4. Italic: *italic*
+    if (part.startsWith('*') && part.endsWith('*') && part.length >= 2) {
       return (
         <em key={index} className="italic text-stone-900 font-medium">
           {part.slice(1, -1)}
         </em>
       );
     }
+    // 5. Strikethrough: ~~text~~
+    if (part.startsWith('~~') && part.endsWith('~~') && part.length >= 4) {
+      return (
+        <del key={index} className="line-through text-stone-500">
+          {part.slice(2, -2)}
+        </del>
+      );
+    }
+    // 6. Markdown link: [text](url)
+    const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
+    if (linkMatch) {
+      return (
+        <a
+          key={index}
+          href={linkMatch[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:text-blue-800 underline font-medium"
+        >
+          {linkMatch[1]}
+        </a>
+      );
+    }
+
     return part;
   });
 }
 
+// Helper to strip outer quotes commonly wrapped around answer strings
+function cleanMarkdownText(raw) {
+  if (raw == null) return '';
+  let str = String(raw).trim();
+  if (
+    (str.startsWith('"') && str.endsWith('"') && str.length >= 2) ||
+    (str.startsWith("'") && str.endsWith("'") && str.length >= 2)
+  ) {
+    str = str.slice(1, -1).trim();
+  }
+  if (str.startsWith('\\"') && str.endsWith('\\"') && str.length >= 4) {
+    str = str.slice(2, -2).trim();
+  }
+  return str;
+}
+
+function stripOuterQuotes(str) {
+  if (!str) return '';
+  let s = str.trim();
+  if (
+    (s.startsWith('"') && s.endsWith('"') && s.length >= 2) ||
+    (s.startsWith("'") && s.endsWith("'") && s.length >= 2)
+  ) {
+    s = s.slice(1, -1).trim();
+  }
+  if (s.startsWith('\\"')) s = s.slice(2).trim();
+  if (s.endsWith('\\"')) s = s.slice(0, -2).trim();
+  if (s.startsWith('"') && !s.slice(1).includes('"')) s = s.slice(1).trim();
+  if (s.endsWith('"') && !s.slice(0, -1).includes('"')) s = s.slice(0, -1).trim();
+  return s;
+}
+
 // Helper to check if a line is a Markdown table separator (|---|---| or :---|:---:)
 function isTableSeparatorLine(line) {
+  if (!line) return false;
   const trimmed = line.trim();
   return (
     trimmed.includes('|') &&
@@ -132,55 +209,633 @@ function splitTableRow(line) {
   return trimmed.split('|').map((c) => c.trim());
 }
 
-// Parses Markdown tables out of answers
-function parseAnswerWithTable(answerText) {
-  if (!answerText) return { preText: '', table: null, postText: '' };
+// Parses full Markdown into structural blocks: headings, tables, code blocks, lists, quotes, and paragraphs
+function parseMarkdownBlocks(rawText) {
+  const text = cleanMarkdownText(rawText);
+  if (!text) return [];
 
-  const lines = answerText.split('\n');
+  const lines = text.split(/\r?\n/);
+  const blocks = [];
+  let i = 0;
 
-  // Find table separator line index (which must be preceded by a header line with '|')
-  const sepIdx = lines.findIndex(
-    (line, i) => i > 0 && isTableSeparatorLine(line) && lines[i - 1].includes('|')
-  );
+  while (i < lines.length) {
+    const line = lines[i];
+    const trimmed = line.trim();
 
-  if (sepIdx === -1) {
-    return { preText: answerText, table: null, postText: '' };
-  }
-
-  const headerIdx = sepIdx - 1;
-  const headerCells = splitTableRow(lines[headerIdx]);
-
-  if (headerCells.length === 0) {
-    return { preText: answerText, table: null, postText: '' };
-  }
-
-  // Find table end: consecutive rows containing '|'
-  let rowIdx = sepIdx + 1;
-  const rows = [];
-  while (rowIdx < lines.length && lines[rowIdx].trim().includes('|')) {
-    const cells = splitTableRow(lines[rowIdx]);
-    // Only add row if it contains at least one non-empty cell
-    if (cells.some((c) => c.length > 0)) {
-      // Pad cells if row has fewer columns than header, or slice if more
-      while (cells.length < headerCells.length) {
-        cells.push('');
-      }
-      rows.push(cells.slice(0, headerCells.length));
+    // Skip empty lines
+    if (!trimmed) {
+      i++;
+      continue;
     }
-    rowIdx++;
+
+    // 1. Fenced Code Block: ```lang ... ```
+    if (trimmed.startsWith('```')) {
+      const lang = trimmed.slice(3).trim() || 'python';
+      const codeLines = [];
+      i++;
+      while (i < lines.length && !lines[i].trim().startsWith('```')) {
+        codeLines.push(lines[i]);
+        i++;
+      }
+      if (i < lines.length && lines[i].trim().startsWith('```')) {
+        i++; // skip closing ```
+      }
+      blocks.push({
+        type: 'code',
+        lang: lang,
+        content: codeLines.join('\n'),
+      });
+      continue;
+    }
+
+    // 2. Markdown Table
+    if (trimmed.includes('|') && i + 1 < lines.length && isTableSeparatorLine(lines[i + 1])) {
+      const headers = splitTableRow(lines[i]);
+      i += 2; // skip header and separator
+      const rows = [];
+      while (i < lines.length && lines[i].trim().includes('|')) {
+        const cells = splitTableRow(lines[i]);
+        if (cells.some((c) => c.length > 0)) {
+          while (cells.length < headers.length) cells.push('');
+          rows.push(cells.slice(0, headers.length));
+        }
+        i++;
+      }
+      blocks.push({
+        type: 'table',
+        headers,
+        rows,
+      });
+      continue;
+    }
+
+    // 3. Headings: # H1, ## H2, ### H3, #### H4
+    const headingMatch = trimmed.match(/^(#{1,6})\s+(.+)$/);
+    if (headingMatch) {
+      blocks.push({
+        type: 'heading',
+        level: headingMatch[1].length,
+        text: headingMatch[2],
+      });
+      i++;
+      continue;
+    }
+
+    // 4. Horizontal Rule: ---, ***, ___
+    if (/^(?:---+|\*\*\*+|___+)\s*$/.test(trimmed)) {
+      blocks.push({ type: 'hr' });
+      i++;
+      continue;
+    }
+
+    // 5. Blockquote: > quote
+    if (trimmed.startsWith('>')) {
+      const quoteLines = [];
+      while (i < lines.length && lines[i].trim().startsWith('>')) {
+        let qLine = lines[i].trim().slice(1);
+        if (qLine.startsWith(' ')) qLine = qLine.slice(1);
+        quoteLines.push(qLine);
+        i++;
+      }
+      blocks.push({
+        type: 'quote',
+        text: quoteLines.join('\n'),
+      });
+      continue;
+    }
+
+    // 6. Unordered List: - item, * item, + item, • item
+    if (/^[-*+•]\s+(.+)$/.test(trimmed)) {
+      const items = [];
+      while (i < lines.length) {
+        const curTrim = lines[i].trim();
+        const itemMatch = curTrim.match(/^[-*+•]\s+(.+)$/);
+        if (itemMatch) {
+          items.push(itemMatch[1]);
+          i++;
+        } else if (
+          items.length > 0 &&
+          curTrim !== '' &&
+          !curTrim.startsWith('#') &&
+          !curTrim.startsWith('```') &&
+          !curTrim.includes('|') &&
+          !curTrim.startsWith('>') &&
+          !/^\d+[\.\)]\s+/.test(curTrim)
+        ) {
+          items[items.length - 1] += ' ' + curTrim;
+          i++;
+        } else {
+          break;
+        }
+      }
+      blocks.push({
+        type: 'ul',
+        items,
+      });
+      continue;
+    }
+
+    // 7. Ordered List: 1. item, 2. item
+    if (/^\d+[\.\)]\s+(.+)$/.test(trimmed)) {
+      const items = [];
+      while (i < lines.length) {
+        const curTrim = lines[i].trim();
+        const itemMatch = curTrim.match(/^\d+[\.\)]\s+(.+)$/);
+        if (itemMatch) {
+          items.push(itemMatch[1]);
+          i++;
+        } else if (
+          items.length > 0 &&
+          curTrim !== '' &&
+          !curTrim.startsWith('#') &&
+          !curTrim.startsWith('```') &&
+          !curTrim.includes('|') &&
+          !curTrim.startsWith('>') &&
+          !/^[-*+•]\s+/.test(curTrim)
+        ) {
+          items[items.length - 1] += ' ' + curTrim;
+          i++;
+        } else {
+          break;
+        }
+      }
+      blocks.push({
+        type: 'ol',
+        items,
+      });
+      continue;
+    }
+
+    // 8. Regular Paragraph
+    const pLines = [line];
+    i++;
+    while (
+      i < lines.length &&
+      lines[i].trim() !== '' &&
+      !lines[i].trim().startsWith('```') &&
+      !(lines[i].trim().includes('|') && i + 1 < lines.length && isTableSeparatorLine(lines[i + 1])) &&
+      !lines[i].trim().match(/^#{1,6}\s+/) &&
+      !/^(?:---+|\*\*\*+|___+)\s*$/.test(lines[i].trim()) &&
+      !lines[i].trim().startsWith('>') &&
+      !/^[-*+•]\s+/.test(lines[i].trim()) &&
+      !/^\d+[\.\)]\s+/.test(lines[i].trim())
+    ) {
+      pLines.push(lines[i]);
+      i++;
+    }
+    blocks.push({
+      type: 'paragraph',
+      text: stripOuterQuotes(pLines.join('\n')),
+    });
   }
 
-  const preLines = lines.slice(0, headerIdx).join('\n').trim();
-  const postLines = lines.slice(rowIdx).join('\n').trim();
+  return blocks;
+}
 
-  return {
-    preText: preLines,
-    table: {
-      headers: headerCells,
-      rows: rows,
-    },
-    postText: postLines,
+// Styled Markdown Table Component
+function MarkdownTable({ headers, rows, theme }) {
+  const isCore = theme === 'blue';
+  const isHr = theme === 'purple';
+
+  return (
+    <div className="my-3 space-y-1.5">
+      <div className={`overflow-x-auto rounded-xl border bg-white shadow-xs ${
+        isCore ? 'border-blue-200/90' : isHr ? 'border-purple-200/90' : 'border-emerald-200/90'
+      }`}>
+        <table className="w-full text-left border-collapse text-xs sm:text-sm">
+          <thead>
+            <tr className={
+              isCore
+                ? 'bg-blue-100/90 border-b border-blue-200 text-blue-950'
+                : isHr
+                ? 'bg-purple-100/90 border-b border-purple-200 text-purple-950'
+                : 'bg-emerald-100/90 border-b border-emerald-200 text-emerald-950'
+            }>
+              {headers.map((header, idx) => (
+                <th
+                  key={idx}
+                  className={`py-2.5 px-3.5 font-bold tracking-tight border-r last:border-r-0 whitespace-nowrap ${
+                    isCore ? 'border-blue-200/60' : isHr ? 'border-purple-200/60' : 'border-emerald-200/60'
+                  }`}
+                >
+                  {renderFormattedInline(header, theme)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className={isCore ? 'divide-y divide-blue-100/70' : isHr ? 'divide-y divide-purple-100/70' : 'divide-y divide-emerald-100/70'}>
+            {rows.map((row, rIdx) => (
+              <tr
+                key={rIdx}
+                className={`transition-colors ${
+                  isCore
+                    ? 'hover:bg-blue-50/60 even:bg-blue-50/20'
+                    : isHr
+                    ? 'hover:bg-purple-50/60 even:bg-purple-50/20'
+                    : 'hover:bg-emerald-50/60 even:bg-emerald-50/20'
+                }`}
+              >
+                {row.map((cell, cIdx) => (
+                  <td
+                    key={cIdx}
+                    className={`py-2.5 px-3.5 leading-relaxed text-stone-800 border-r last:border-r-0 ${
+                      isCore ? 'border-blue-100/60' : isHr ? 'border-purple-100/60' : 'border-emerald-100/60'
+                    } ${
+                      cIdx === 0
+                        ? (isCore ? 'font-semibold text-blue-950' : isHr ? 'font-semibold text-purple-950' : 'font-semibold text-emerald-950')
+                        : ''
+                    }`}
+                  >
+                    {renderFormattedInline(cell, theme)}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+// Markdown Content Renderer that presents full markdown with headers, tables, code blocks, lists, quotes, and paragraphs
+function MarkdownContent({ content, theme = 'emerald', className = '' }) {
+  const blocks = useMemo(() => parseMarkdownBlocks(content), [content]);
+
+  if (!blocks || blocks.length === 0) {
+    return <span className="text-stone-400 italic text-xs">No answer content provided.</span>;
+  }
+
+  const isCore = theme === 'blue';
+  const isHr = theme === 'purple';
+
+  const headingCls = isCore ? 'text-blue-900' : isHr ? 'text-purple-900' : 'text-emerald-900';
+  const bulletDotCls = isCore ? 'bg-blue-500' : isHr ? 'bg-purple-500' : 'bg-emerald-500';
+  const numberBadgeCls = isCore ? 'bg-blue-100 text-blue-900' : isHr ? 'bg-purple-100 text-purple-900' : 'bg-emerald-100 text-emerald-900';
+  const quoteCls = isCore
+    ? 'border-blue-500 bg-blue-50/60 text-blue-950'
+    : isHr
+    ? 'border-purple-500 bg-purple-50/60 text-purple-950'
+    : 'border-emerald-500 bg-emerald-50/60 text-emerald-950';
+
+  return (
+    <div className={`space-y-3 ${className}`}>
+      {blocks.map((block, idx) => {
+        switch (block.type) {
+          case 'heading': {
+            if (block.level === 1) {
+              return (
+                <h1 key={idx} className="text-base sm:text-lg font-bold text-stone-900 mt-4 mb-2 pb-1 border-b border-stone-200">
+                  {renderFormattedInline(block.text, theme)}
+                </h1>
+              );
+            }
+            if (block.level === 2) {
+              return (
+                <h2 key={idx} className="text-sm sm:text-base font-bold text-stone-900 mt-3.5 mb-1.5">
+                  {renderFormattedInline(block.text, theme)}
+                </h2>
+              );
+            }
+            if (block.level === 3) {
+              return (
+                <h3 key={idx} className={`text-xs sm:text-sm font-bold mt-3 mb-1 ${headingCls}`}>
+                  {renderFormattedInline(block.text, theme)}
+                </h3>
+              );
+            }
+            return (
+              <h4 key={idx} className="text-xs font-semibold uppercase tracking-wider text-stone-700 mt-2.5 mb-1">
+                {renderFormattedInline(block.text, theme)}
+              </h4>
+            );
+          }
+          case 'table': {
+            return (
+              <MarkdownTable
+                key={idx}
+                headers={block.headers}
+                rows={block.rows}
+                theme={theme}
+              />
+            );
+          }
+          case 'code': {
+            return (
+              <div key={idx} className="my-2.5">
+                <CodeBlock code={block.content} />
+              </div>
+            );
+          }
+          case 'quote': {
+            return (
+              <blockquote key={idx} className={`border-l-3.5 pl-3.5 py-2 my-2.5 rounded-r-xl text-xs sm:text-sm italic leading-relaxed ${quoteCls}`}>
+                {renderFormattedInline(block.text, theme)}
+              </blockquote>
+            );
+          }
+          case 'ul': {
+            return (
+              <ul key={idx} className="space-y-1.5 my-2 pl-1 sm:pl-2">
+                {block.items.map((item, itemIdx) => (
+                  <li key={itemIdx} className="flex items-start gap-2.5 text-stone-900 leading-relaxed text-xs sm:text-sm">
+                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 mt-2 ${bulletDotCls}`} />
+                    <div className="flex-1 min-w-0">
+                      {renderFormattedInline(item, theme)}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            );
+          }
+          case 'ol': {
+            return (
+              <ol key={idx} className="space-y-1.5 my-2 pl-1 sm:pl-2">
+                {block.items.map((item, itemIdx) => (
+                  <li key={itemIdx} className="flex items-start gap-2.5 text-stone-900 leading-relaxed text-xs sm:text-sm">
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md shrink-0 mt-0.5 font-mono ${numberBadgeCls}`}>
+                      {itemIdx + 1}.
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      {renderFormattedInline(item, theme)}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            );
+          }
+          case 'hr': {
+            return <hr key={idx} className="my-3.5 border-t border-stone-200/90" />;
+          }
+          case 'paragraph':
+          default: {
+            return (
+              <p key={idx} className="text-stone-900 text-xs sm:text-sm leading-relaxed whitespace-pre-line font-sans">
+                {renderFormattedInline(block.text, theme)}
+              </p>
+            );
+          }
+        }
+      })}
+    </div>
+  );
+}
+
+// Reusable Markdown Editor with formatting toolbar & live preview tab
+function MarkdownEditor({
+  value,
+  onChange,
+  placeholder,
+  rows = 8,
+  theme = 'emerald',
+  autoFocus = false,
+}) {
+  const [activeTab, setActiveTab] = useState('write'); // 'write' | 'preview'
+  const textareaRef = useRef(null);
+  const isCore = theme === 'blue';
+  const isHr = theme === 'purple';
+
+  const applyFormat = (prefix, suffix = '', defaultText = '') => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const selected = text.substring(start, end);
+
+    const textToInsert = selected || defaultText;
+    const newText = text.substring(0, start) + prefix + textToInsert + suffix + text.substring(end);
+    onChange(newText);
+
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+        const newCursorStart = start + prefix.length;
+        const newCursorEnd = newCursorStart + textToInsert.length;
+        textareaRef.current.setSelectionRange(newCursorStart, newCursorEnd);
+      }
+    }, 0);
   };
+
+  const applyBulletList = () => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const selected = text.substring(start, end);
+
+    if (selected) {
+      const converted = selected
+        .split('\n')
+        .map((line) => (/^[-*+•]\s+/.test(line.trim()) ? line : `- ${line}`))
+        .join('\n');
+      const newText = text.substring(0, start) + converted + text.substring(end);
+      onChange(newText);
+    } else {
+      applyFormat('\n- ', '\n', 'List item');
+    }
+  };
+
+  const applyNumberedList = () => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const selected = text.substring(start, end);
+
+    if (selected) {
+      let count = 1;
+      const converted = selected
+        .split('\n')
+        .map((line) => {
+          if (/^\d+[\.\)]\s+/.test(line.trim())) return line;
+          return `${count++}. ${line}`;
+        })
+        .join('\n');
+      const newText = text.substring(0, start) + converted + text.substring(end);
+      onChange(newText);
+    } else {
+      applyFormat('\n1. ', '\n', 'First item\n2. Second item');
+    }
+  };
+
+  const insertTableTemplate = () => {
+    const template = `\n| Concept | Option A | Option B |\n| --- | --- | --- |\n| Feature 1 | Details A | Details B |\n| Feature 2 | Details A | Details B |\n`;
+    applyFormat('', '', template);
+  };
+
+  const activeFocusRing = isCore
+    ? 'focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
+    : isHr
+    ? 'focus:ring-2 focus:ring-purple-500 focus:border-purple-500'
+    : 'focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500';
+
+  const tabActiveCls = isCore
+    ? 'bg-blue-600 text-white shadow-2xs'
+    : isHr
+    ? 'bg-purple-600 text-white shadow-2xs'
+    : 'bg-emerald-600 text-white shadow-2xs';
+
+  return (
+    <div className="space-y-2">
+      {/* Markdown Toolbar & Tab Switcher */}
+      <div className="flex flex-wrap items-center justify-between gap-2 p-1.5 bg-stone-100/90 rounded-xl border border-stone-200 text-xs">
+        {/* Formatting Actions */}
+        <div className="flex flex-wrap items-center gap-0.5">
+          <button
+            type="button"
+            onClick={() => applyFormat('**', '**', 'bold text')}
+            title="Bold (**text**)"
+            className="px-2 py-1 font-bold text-stone-700 hover:text-stone-900 hover:bg-stone-200/80 rounded transition-colors cursor-pointer"
+          >
+            B
+          </button>
+          <button
+            type="button"
+            onClick={() => applyFormat('*', '*', 'italic text')}
+            title="Italic (*text*)"
+            className="px-2 py-1 italic font-serif text-stone-700 hover:text-stone-900 hover:bg-stone-200/80 rounded transition-colors cursor-pointer"
+          >
+            I
+          </button>
+          <button
+            type="button"
+            onClick={() => applyFormat('\n### ', '\n', 'Heading')}
+            title="Heading (### Title)"
+            className="px-2 py-1 font-semibold text-stone-700 hover:text-stone-900 hover:bg-stone-200/80 rounded transition-colors text-[11px] cursor-pointer"
+          >
+            H3
+          </button>
+          <div className="w-px h-3.5 bg-stone-300 mx-1" />
+          <button
+            type="button"
+            onClick={() => applyFormat('`', '`', 'code')}
+            title="Inline Code (`code`)"
+            className="px-1.5 py-1 font-mono text-[11px] text-stone-700 hover:text-stone-900 hover:bg-stone-200/80 rounded transition-colors cursor-pointer"
+          >
+            {'`code`'}
+          </button>
+          <button
+            type="button"
+            onClick={() => applyFormat('\n```python\n', '\n```\n', '# python code here')}
+            title="Code Block (```python ... ```)"
+            className="px-1.5 py-1 font-mono text-[11px] text-stone-700 hover:text-stone-900 hover:bg-stone-200/80 rounded transition-colors cursor-pointer"
+          >
+            {'```block'}
+          </button>
+          <div className="w-px h-3.5 bg-stone-300 mx-1" />
+          <button
+            type="button"
+            onClick={applyBulletList}
+            title="Bullet List (- item)"
+            className="px-2 py-1 font-medium text-stone-700 hover:text-stone-900 hover:bg-stone-200/80 rounded transition-colors text-[11px] flex items-center gap-1 cursor-pointer"
+          >
+            <span>•</span> List
+          </button>
+          <button
+            type="button"
+            onClick={applyNumberedList}
+            title="Numbered List (1. item)"
+            className="px-2 py-1 font-medium text-stone-700 hover:text-stone-900 hover:bg-stone-200/80 rounded transition-colors text-[11px] flex items-center gap-1 cursor-pointer"
+          >
+            <span>1.</span> List
+          </button>
+          <button
+            type="button"
+            onClick={insertTableTemplate}
+            title="Insert Markdown Table"
+            className="px-2 py-1 font-medium text-stone-700 hover:text-stone-900 hover:bg-stone-200/80 rounded transition-colors text-[11px] flex items-center gap-1 cursor-pointer"
+          >
+            <span>⊞</span> Table
+          </button>
+          <button
+            type="button"
+            onClick={() => applyFormat('\n> ', '\n', 'Key interview takeaway')}
+            title="Blockquote (> quote)"
+            className="px-2 py-1 font-serif text-stone-700 hover:text-stone-900 hover:bg-stone-200/80 rounded transition-colors text-[11px] cursor-pointer"
+          >
+            “ Quote
+          </button>
+        </div>
+
+        {/* Tab Switcher: Write vs Preview */}
+        <div className="flex items-center gap-1 bg-stone-200/70 p-0.5 rounded-lg text-xs font-semibold shrink-0">
+          <button
+            type="button"
+            onClick={() => setActiveTab('write')}
+            className={`px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+              activeTab === 'write' ? tabActiveCls : 'text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            ✏️ Write
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('preview')}
+            className={`px-2.5 py-1 rounded-md transition-all cursor-pointer flex items-center gap-1 ${
+              activeTab === 'preview' ? tabActiveCls : 'text-stone-600 hover:text-stone-900'
+            }`}
+          >
+            <span>👁️ Preview</span>
+            <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+              activeTab === 'preview' ? 'bg-white/20 text-white' : 'bg-stone-300 text-stone-700'
+            }`}>
+              MD
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* Editor Body: Write Textarea or Live Preview */}
+      {activeTab === 'write' ? (
+        <textarea
+          ref={textareaRef}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          rows={rows}
+          placeholder={placeholder || 'Type or paste your answer in Markdown format (supports **bold**, *italic*, `code`, ```blocks, - lists, 1. numbers, | tables |, > quotes)...'}
+          className={`w-full p-3.5 text-xs sm:text-sm font-mono leading-relaxed text-stone-900 bg-white rounded-xl border border-stone-300 shadow-inner resize-y transition-all ${activeFocusRing}`}
+          autoFocus={autoFocus}
+        />
+      ) : (
+        <div className="p-4 bg-white rounded-xl border border-stone-200 min-h-[160px] max-h-[360px] overflow-y-auto shadow-inner">
+          <div className="flex items-center justify-between mb-2.5 pb-2 border-b border-stone-100 text-[11px] text-stone-400 font-medium">
+            <span>Markdown Live Preview:</span>
+            <span className={`px-2 py-0.5 rounded-full font-semibold text-[10px] ${
+              isCore ? 'bg-blue-100 text-blue-900' : isHr ? 'bg-purple-100 text-purple-900' : 'bg-emerald-100 text-emerald-900'
+            }`}>
+              Formatted
+            </span>
+          </div>
+          {value && value.trim() ? (
+            <MarkdownContent content={value} theme={theme} />
+          ) : (
+            <div className="text-stone-400 italic text-xs py-4 text-center">
+              Nothing to preview yet. Switch to "Write" tab to type or paste markdown.
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Formatting Hint */}
+      <div className="flex items-center justify-between text-[11px] text-stone-500 px-1">
+        <span>Markdown formatted: headings, **bold**, *italic*, `code`, ```blocks, - lists, | tables |</span>
+        {activeTab === 'write' && (
+          <button
+            type="button"
+            onClick={() => setActiveTab('preview')}
+            className={`font-semibold underline cursor-pointer ${
+              isCore ? 'text-blue-700 hover:text-blue-900' : isHr ? 'text-purple-700 hover:text-purple-900' : 'text-emerald-700 hover:text-emerald-900'
+            }`}
+          >
+            Preview Formatted &rarr;
+          </button>
+        )}
+      </div>
+    </div>
+  );
 }
 
 // Dedicated Answer Component with Inline Edit & Save, Comparison Table & Spoken Response
@@ -203,6 +858,7 @@ function AnswerSection({
   const [saveStatus, setSaveStatus] = useState(null); // null | 'saving' | 'saved'
   const isCore = Number(phaseId) >= 200;
   const isHr = Number(phaseId) >= 100 && Number(phaseId) < 200;
+  const theme = isCore ? 'blue' : isHr ? 'purple' : 'emerald';
 
   // Sync editText if currentAnswer changes from outside and not currently editing
   useEffect(() => {
@@ -247,7 +903,10 @@ function AnswerSection({
     }
   };
 
-  const parsed = useMemo(() => parseAnswerWithTable(currentAnswer), [currentAnswer]);
+  const hasTable = useMemo(() => {
+    const text = currentAnswer || '';
+    return text.includes('|') && text.split(/\r?\n/).some(isTableSeparatorLine);
+  }, [currentAnswer]);
 
   return (
     <div
@@ -277,7 +936,7 @@ function AnswerSection({
               <span>✏️</span> Customized
             </span>
           )}
-          {parsed.table && !isEditing && (
+          {hasTable && !isEditing && (
             <span className={`text-[10px] font-bold tracking-normal px-2 py-0.5 rounded-full flex items-center gap-1 ${
               isCore ? 'bg-blue-100 text-blue-800 border border-blue-300/80' : isHr ? 'bg-purple-100 text-purple-800 border border-purple-300/80' : 'bg-emerald-100 text-emerald-800 border border-emerald-300/80'
             }`}>
@@ -322,7 +981,7 @@ function AnswerSection({
             </>
           ) : (
             <span className="text-[11px] text-stone-500 italic">
-              Markdown tables &amp; `code` supported &bull; syncs to whole site
+              Full Markdown supported (headings, lists, code, tables) &bull; syncs to whole site
             </span>
           )}
         </div>
@@ -331,18 +990,12 @@ function AnswerSection({
       {/* Editing State vs Formatted Display */}
       {isEditing ? (
         <div className="space-y-3">
-          <textarea
+          <MarkdownEditor
             value={editText}
-            onChange={(e) => setEditText(e.target.value)}
+            onChange={setEditText}
+            placeholder="Type or paste your interview-ready answer here in Markdown format (supports headings, **bold**, lists, ```code```, and | tables |)..."
             rows={8}
-            placeholder="Type your manipulated or customized answer here... You can use `backticks` for code or Markdown table syntax (| Col 1 | Col 2 |)."
-            className={`w-full p-3.5 text-xs sm:text-sm font-sans leading-relaxed text-stone-900 bg-white rounded-xl border shadow-inner resize-y transition-all ${
-              isCore
-                ? 'border-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
-                : isHr
-                ? 'border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500'
-                : 'border-amber-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500'
-            }`}
+            theme={theme}
             autoFocus
           />
 
@@ -398,103 +1051,7 @@ function AnswerSection({
         </div>
       ) : (
         <div>
-          {/* Pre-table Spoken Response */}
-          {parsed.preText && (
-            <div className="text-stone-900 text-sm sm:text-base leading-relaxed space-y-3">
-              {(parsed.preText.startsWith('"') && parsed.preText.endsWith('"')
-                ? parsed.preText.slice(1, -1)
-                : parsed.preText
-              ).split('\n\n').map((paragraph, pIdx) => (
-                <p key={pIdx} className="whitespace-pre-line leading-relaxed">
-                  {renderFormattedInline(paragraph)}
-                </p>
-              ))}
-            </div>
-          )}
-
-          {/* Structured Comparison Table */}
-          {parsed.table && (
-            <div className="mt-3.5 space-y-2">
-              <div className={`text-xs font-bold flex items-center gap-1.5 mb-1 ${
-                isCore ? 'text-blue-900' : isHr ? 'text-purple-900' : 'text-emerald-900'
-              }`}>
-                <span className={`w-5 h-5 rounded-md flex items-center justify-center text-[11px] font-bold ${
-                  isCore ? 'bg-blue-100/90 text-blue-800' : isHr ? 'bg-purple-100/90 text-purple-800' : 'bg-emerald-100/90 text-emerald-800'
-                }`}>
-                  ⇄
-                </span>
-                <span>Comparison Table:</span>
-              </div>
-              <div className={`overflow-x-auto rounded-xl border bg-white shadow-xs ${
-                isCore ? 'border-blue-200/90' : isHr ? 'border-purple-200/90' : 'border-emerald-200/90'
-              }`}>
-                <table className="w-full text-left border-collapse text-xs sm:text-sm">
-                  <thead>
-                    <tr className={
-                      isCore
-                        ? 'bg-blue-100/90 border-b border-blue-200 text-blue-950'
-                        : isHr
-                        ? 'bg-purple-100/90 border-b border-purple-200 text-purple-950'
-                        : 'bg-emerald-100/90 border-b border-emerald-200 text-emerald-950'
-                    }>
-                      {parsed.table.headers.map((header, idx) => (
-                        <th
-                          key={idx}
-                          className={`py-2.5 px-3.5 font-bold tracking-tight border-r last:border-r-0 whitespace-nowrap ${
-                            isCore ? 'border-blue-200/60' : isHr ? 'border-purple-200/60' : 'border-emerald-200/60'
-                          }`}
-                        >
-                          {renderFormattedInline(header)}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className={isCore ? 'divide-y divide-blue-100/70' : isHr ? 'divide-y divide-purple-100/70' : 'divide-y divide-emerald-100/70'}>
-                    {parsed.table.rows.map((row, rIdx) => (
-                      <tr
-                        key={rIdx}
-                        className={`transition-colors ${
-                          isCore
-                            ? 'hover:bg-blue-50/60 even:bg-blue-50/20'
-                            : isHr
-                            ? 'hover:bg-purple-50/60 even:bg-purple-50/20'
-                            : 'hover:bg-emerald-50/60 even:bg-emerald-50/20'
-                        }`}
-                      >
-                        {row.map((cell, cIdx) => (
-                          <td
-                            key={cIdx}
-                            className={`py-2.5 px-3.5 leading-relaxed text-stone-800 border-r last:border-r-0 ${
-                              isCore ? 'border-blue-100/60' : isHr ? 'border-purple-100/60' : 'border-emerald-100/60'
-                            } ${
-                              cIdx === 0
-                                ? (isCore ? 'font-semibold text-blue-950' : isHr ? 'font-semibold text-purple-950' : 'font-semibold text-emerald-950')
-                                : ''
-                            }`}
-                          >
-                            {renderFormattedInline(cell)}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {/* Post-table Notes / Details */}
-          {parsed.postText && (
-            <div className={`mt-3.5 border-l-4 px-3.5 py-2.5 rounded-r-xl text-xs sm:text-sm text-stone-900 leading-relaxed space-y-2 ${
-              isCore ? 'bg-blue-50/90 border-blue-500' : isHr ? 'bg-purple-50/90 border-purple-500' : 'bg-emerald-50/90 border-emerald-500'
-            }`}>
-              {parsed.postText.split('\n\n').map((paragraph, pIdx) => (
-                <p key={pIdx} className="whitespace-pre-line leading-relaxed">
-                  {renderFormattedInline(paragraph)}
-                </p>
-              ))}
-            </div>
-          )}
+          <MarkdownContent content={currentAnswer} theme={theme} />
         </div>
       )}
     </div>
@@ -730,17 +1287,12 @@ function AddQuestionModal({
                 Markdown &amp; tables supported
               </span>
             </div>
-            <textarea
-              rows={5}
+            <MarkdownEditor
               value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-              placeholder="Explain clearly with core concepts, bullet points, or comparison tables..."
-              className={`w-full text-xs sm:text-sm bg-stone-50 border border-stone-300 rounded-xl p-3 text-stone-900 placeholder:text-stone-400 focus:outline-none focus:ring-2 ${
-                Number(phaseId) >= 100
-                  ? 'focus:ring-purple-500/30 focus:border-purple-500'
-                  : 'focus:ring-amber-500/30 focus:border-amber-500'
-              } leading-relaxed font-mono`}
-              required
+              onChange={setAnswer}
+              placeholder="Explain clearly with headings, bullet points, code snippets, or comparison tables..."
+              rows={5}
+              theme={Number(phaseId) >= 200 ? 'blue' : Number(phaseId) >= 100 ? 'purple' : 'emerald'}
             />
           </div>
 
