@@ -2,14 +2,43 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { allPhases } from './data/interviewData.js';
 import { allHrPhases } from './data/hrInterviewData.js';
 import { allCorePhases } from './data/coreInterviewData.js';
-import { ArrowRight, Users, X, ChevronDown, ChevronUp, Sparkles, Search } from 'lucide-react';
+import { ArrowRight, Users, X, ChevronDown, ChevronUp, Sparkles, Search, Copy, Check } from 'lucide-react';
+
+// Safe copy to clipboard with fallback for non-secure contexts or older browsers
+async function copyToClipboard(text) {
+  if (!text) return false;
+  if (navigator?.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // Fallback below
+    }
+  }
+  try {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    const successful = document.execCommand('copy');
+    textArea.remove();
+    return successful;
+  } catch (err) {
+    console.error('Failed to copy to clipboard:', err);
+    return false;
+  }
+}
 
 // Dedicated CodeBlock with line numbers, copy button, and output display
 function CodeBlock({ code, output }) {
   const [copied, setCopied] = useState(false);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(code);
+  const handleCopy = async () => {
+    await copyToClipboard(code);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -856,9 +885,17 @@ function AnswerSection({
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(currentAnswer);
   const [saveStatus, setSaveStatus] = useState(null); // null | 'saving' | 'saved'
+  const [copiedAnswer, setCopiedAnswer] = useState(false);
   const isCore = Number(phaseId) >= 200;
   const isHr = Number(phaseId) >= 100 && Number(phaseId) < 200;
   const theme = isCore ? 'blue' : isHr ? 'purple' : 'emerald';
+
+  const handleCopyAnswer = async (e) => {
+    e?.stopPropagation?.();
+    await copyToClipboard(currentAnswer);
+    setCopiedAnswer(true);
+    setTimeout(() => setCopiedAnswer(false), 2000);
+  };
 
   // Sync editText if currentAnswer changes from outside and not currently editing
   useEffect(() => {
@@ -949,6 +986,25 @@ function AnswerSection({
         <div className="flex items-center gap-2">
           {!isEditing ? (
             <>
+              <button
+                type="button"
+                onClick={handleCopyAnswer}
+                title="Copy answer text"
+                className="text-[11px] font-semibold text-stone-700 hover:text-stone-900 bg-white/90 hover:bg-white px-2.5 py-1 rounded-lg border border-stone-200 transition-all cursor-pointer flex items-center gap-1 shadow-2xs hover:scale-[1.02] active:scale-[0.98]"
+              >
+                {copiedAnswer ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                    <span className="text-emerald-700 font-bold">Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy className="w-3.5 h-3.5 text-stone-500" />
+                    <span>Copy Answer</span>
+                  </>
+                )}
+              </button>
+
               {isCustomized && (
                 <button
                   type="button"
@@ -1426,6 +1482,16 @@ const defaultHrQuestions = [
 function HrQuestionsModal({ isOpen, onClose }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [openIds, setOpenIds] = useState(new Set(['hr-1']));
+  const [copiedHrId, setCopiedHrId] = useState(null);
+
+  const handleCopyHrQuestion = async (text, id, e) => {
+    e?.stopPropagation?.();
+    await copyToClipboard(text);
+    setCopiedHrId(id);
+    setTimeout(() => {
+      setCopiedHrId((prev) => (prev === id ? null : prev));
+    }, 2000);
+  };
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -1525,10 +1591,17 @@ function HrQuestionsModal({ isOpen, onClose }) {
                       : 'border-stone-200/80 bg-white hover:border-stone-300'
                   }`}
                 >
-                  <button
-                    type="button"
+                  <div
                     onClick={() => toggle(item.id)}
-                    className="w-full text-left p-4 flex items-start justify-between gap-3 cursor-pointer"
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggle(item.id);
+                      }
+                    }}
+                    className="w-full text-left p-4 flex items-start justify-between gap-3 cursor-pointer select-none"
                   >
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
@@ -1545,14 +1618,38 @@ function HrQuestionsModal({ isOpen, onClose }) {
                         </p>
                       )}
                     </div>
-                    <div className="shrink-0 text-stone-400 mt-1">
-                      {isOpen ? (
-                        <ChevronUp className="w-4 h-4 text-purple-600" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4" />
-                      )}
+                    <div className="flex items-center gap-2 shrink-0 self-start mt-0.5">
+                      <button
+                        type="button"
+                        onClick={(e) => handleCopyHrQuestion(item.question, item.id, e)}
+                        title="Copy question"
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-2xs hover:scale-[1.03] active:scale-[0.97] ${
+                          copiedHrId === item.id
+                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold'
+                            : 'bg-purple-50 hover:bg-purple-100 text-purple-800 border border-purple-200'
+                        }`}
+                      >
+                        {copiedHrId === item.id ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            <span className="text-emerald-700 font-bold">Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5 text-purple-600" />
+                            <span>Copy</span>
+                          </>
+                        )}
+                      </button>
+                      <div className="text-stone-400">
+                        {isOpen ? (
+                          <ChevronUp className="w-4 h-4 text-purple-600" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        )}
+                      </div>
                     </div>
-                  </button>
+                  </div>
 
                   {isOpen && (
                     <div className="px-4 pb-4 pt-1 border-t border-purple-100/60 text-xs sm:text-sm text-stone-700 space-y-2 leading-relaxed">
@@ -1718,10 +1815,23 @@ export default function App() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isHrModalOpen, setIsHrModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [copiedQuestionId, setCopiedQuestionId] = useState(null);
 
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(''), 3500);
+  };
+
+  const handleCopyQuestion = async (text, id, e) => {
+    e?.stopPropagation?.();
+    const success = await copyToClipboard(text);
+    if (success) {
+      setCopiedQuestionId(id);
+      showToast('Question copied to clipboard!');
+      setTimeout(() => {
+        setCopiedQuestionId((prev) => (prev === id ? null : prev));
+      }, 2000);
+    }
   };
 
   // Fetch live questions for a phase from MongoDB backend so all devices stay in sync
@@ -3063,13 +3173,21 @@ export default function App() {
                         }`}
                       >
                         {/* Question Header (Click to toggle dropdown) */}
-                        <button
+                        <div
                           onClick={() => toggleQuestion(q.id)}
-                          className={`w-full text-left p-4 sm:p-5 flex items-start justify-between gap-4 cursor-pointer ${
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              toggleQuestion(q.id);
+                            }
+                          }}
+                          className={`w-full text-left p-4 sm:p-5 flex items-start justify-between gap-4 cursor-pointer select-none ${
                             isCoreTrack ? 'hover:bg-blue-50/30' : isHrTrack ? 'hover:bg-purple-50/30' : 'hover:bg-amber-50/30'
                           } transition-colors`}
                         >
-                          <div className="flex items-start gap-3 min-w-0">
+                          <div className="flex items-start gap-3 min-w-0 flex-1">
                             <span className={`inline-block mt-0.5 text-xs font-bold ${
                               isCoreTrack
                                 ? 'text-blue-800 bg-blue-100/80 border-blue-200'
@@ -3079,7 +3197,7 @@ export default function App() {
                             } border px-2 py-0.5 rounded-md shrink-0`}>
                               Q{q.id}
                             </span>
-                            <div className="min-w-0">
+                            <div className="min-w-0 flex-1">
                               <h3 className="text-base sm:text-lg font-bold text-stone-900 leading-snug">
                                 {q.title}
                               </h3>
@@ -3121,25 +3239,54 @@ export default function App() {
                             </div>
                           </div>
 
-                          {/* Dropdown Chevron Indicator */}
-                          <span
-                            className={`text-xs font-bold w-6 h-6 rounded-full border flex items-center justify-center shrink-0 transition-transform duration-200 ${
-                              isCoreTrack
-                                ? isOpen
-                                  ? 'rotate-180 bg-blue-200 text-blue-900 border-blue-300'
-                                  : 'bg-blue-50 border-blue-200 text-blue-700'
-                                : isHrTrack
-                                ? isOpen
-                                  ? 'rotate-180 bg-purple-200 text-purple-900 border-purple-300'
-                                  : 'bg-purple-50 border-purple-200 text-purple-700'
-                                : isOpen
-                                ? 'rotate-180 bg-amber-200 text-amber-900 border-amber-300'
-                                : 'bg-amber-50 border-amber-200 text-amber-700'
-                            }`}
-                          >
-                            ▼
-                          </span>
-                        </button>
+                          {/* Right Controls: Copy Question & Dropdown Chevron */}
+                          <div className="flex items-center gap-2 shrink-0 self-start mt-0.5">
+                            <button
+                              type="button"
+                              onClick={(e) => handleCopyQuestion(q.title, q.id, e)}
+                              title="Copy question text"
+                              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer shadow-2xs hover:scale-[1.03] active:scale-[0.97] ${
+                                copiedQuestionId === q.id
+                                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold'
+                                  : isCoreTrack
+                                  ? 'bg-blue-50/90 hover:bg-blue-100/90 text-blue-800 border border-blue-200/90'
+                                  : isHrTrack
+                                  ? 'bg-purple-50/90 hover:bg-purple-100/90 text-purple-800 border border-purple-200/90'
+                                  : 'bg-stone-50 hover:bg-amber-50 text-stone-700 hover:text-amber-900 border border-stone-200 hover:border-amber-200'
+                              }`}
+                            >
+                              {copiedQuestionId === q.id ? (
+                                <>
+                                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                                  <span className="text-emerald-700 font-bold">Copied!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="w-3.5 h-3.5 text-stone-500" />
+                                  <span className="hidden sm:inline">Copy</span>
+                                </>
+                              )}
+                            </button>
+
+                            <span
+                              className={`text-xs font-bold w-6 h-6 rounded-full border flex items-center justify-center shrink-0 transition-transform duration-200 ${
+                                isCoreTrack
+                                  ? isOpen
+                                    ? 'rotate-180 bg-blue-200 text-blue-900 border-blue-300'
+                                    : 'bg-blue-50 border-blue-200 text-blue-700'
+                                  : isHrTrack
+                                  ? isOpen
+                                    ? 'rotate-180 bg-purple-200 text-purple-900 border-purple-300'
+                                    : 'bg-purple-50 border-purple-200 text-purple-700'
+                                  : isOpen
+                                  ? 'rotate-180 bg-amber-200 text-amber-900 border-amber-300'
+                                  : 'bg-amber-50 border-amber-200 text-amber-700'
+                              }`}
+                            >
+                              ▼
+                            </span>
+                          </div>
+                        </div>
 
                         {/* Dropdown Body: Spoken Answer in Green, Key Concepts, Code */}
                         {isOpen && (
